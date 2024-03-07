@@ -1,21 +1,29 @@
 // Exportiere die MathCurve-Klasse als Modul
 export class MathCurve extends createjs.Shape {
-    constructor(equation, color) {
+    constructor(equation, startX, endX, scaleX, color) {
         super();
+        this.equation = equation;
+        this.color = color;
+        this.startX = startX;
+        this.endX = endX;
+		
+		this.scaleX = scaleX;
+
         this.graphics.setStrokeStyle(2);
-        this.drawCurve(equation, color);
+        this.drawCurve();
     }
 
-    drawCurve(equation, color) {
+    drawCurve() {
         this.graphics.clear();
-        this.graphics.beginStroke(color);
+        this.graphics.beginStroke(this.color);
 
-        for (let x = 0; x <= stage.canvas.width; x += 1) {
-            const y = equation(x);
-            if (x === 0) {
-                this.graphics.moveTo(x, y);
+        for (let x = this.startX; x <= this.endX; x += 1) {
+			
+            const y = this.equation(x);
+            if (x === this.endX) {
+                this.graphics.moveTo(x*this.scaleX, y);
             } else {
-                this.graphics.lineTo(x, y);
+                this.graphics.lineTo(x*this.scaleX, y);
             }
         }
 
@@ -23,5 +31,15 @@ export class MathCurve extends createjs.Shape {
 
         stage.addChild(this);
         stage.update();
+    }
+
+    setStartX(startX) {
+        this.startX = startX;
+        this.drawCurve();
+    }
+
+    setEndX(endX) {
+        this.endX = endX;
+        this.drawCurve();
     }
 }
