@@ -1,34 +1,46 @@
-export class MathCurve extends createjs.Shape {
-    constructor(equation, startX, endX, scaleX, color=createjs.Graphics.getRGB(255, 0, 0), thickness=1) {
+export class MathCurve extends createjs.Container {
+    constructor(equation, startX, endX, scaleValueX, color=createjs.Graphics.getRGB(255, 0, 0), thickness=1) {
         super();
         this.equation = equation;
         this.color = color;
         this.startX = startX;
         this.endX = endX;
-        this.scaleX = scaleX;
-        this.thickness = thickness; // Neue Variable für Strichstärke
+        this.scaleValueX = scaleValueX;
+		this.markedX = 0;
+		this.markerInitialized = false;
+		this.markColor = createjs.Graphics.getRGB(0, 0, 0);
+		this.markRadius = 3;
+        this.thickness = thickness;
 
-        this.graphics.setStrokeStyle(this.thickness); // Setze die Strichstärke im Konstruktor
+        // Erstelle die Kurve
+        this.curve = new createjs.Shape();
+        this.curve.graphics.setStrokeStyle(this.thickness);
+        this.addChild(this.curve);
+
+        // Erstelle den Kreis
+        this.markedCircle = new createjs.Shape();
+        this.markedCircle.graphics.setStrokeStyle(5);
+        this.addChild(this.markedCircle);
+
         this.drawCurve();
+        stage.addChild(this); // Füge den Container zur Bühne hinzu
     }
 
     drawCurve() {
-        this.graphics.clear();
-        this.graphics.beginStroke(this.color);
-        this.graphics.setStrokeStyle(this.thickness); // Setze die Strichstärke in der Methode
+        this.curve.graphics.clear();
+        this.curve.graphics.beginStroke(this.color);
+        this.curve.graphics.setStrokeStyle(this.thickness);
 
         for (let x = this.startX; x <= this.endX; x += 1) {
             const y = this.equation(x);
             if (x === this.endX) {
-                this.graphics.moveTo(x * this.scaleX, y);
+                this.curve.graphics.moveTo(x * this.scaleValueX, y);
             } else {
-                this.graphics.lineTo(x * this.scaleX, y);
+                this.curve.graphics.lineTo(x * this.scaleValueX, y);
             }
         }
 
-        this.graphics.endStroke();
-
-        stage.addChild(this);
+        this.curve.graphics.endStroke();
         stage.update();
     }
 
@@ -44,7 +56,35 @@ export class MathCurve extends createjs.Shape {
 
     setStrokeThickness(thickness) {
         this.thickness = thickness;
-        this.graphics.setStrokeStyle(this.thickness); // Setze die Strichstärke neu
+        this.curve.graphics.setStrokeStyle(this.thickness);
         this.drawCurve();
+    }
+
+    setMarkProperties(color, radius) {
+        this.markerInitialized = true;
+        this.markColor = color || this.markColor;
+        this.markRadius = radius || this.markRadius;
+
+        this.markedCircle.graphics.clear();
+        this.markedCircle.graphics.beginFill(this.markColor)
+            .drawCircle(0, 0, this.markRadius)
+            .endFill();
+
+        stage.update();
+    }
+
+    mark(x=this.markedX) {
+        if (!this.markerInitialized) {
+            this.setMarkProperties();
+        }
+
+        const y = this.equation(x);
+
+        this.markedCircle.x = x * this.scaleValueX;
+        this.markedCircle.y = y;
+
+        this.markedX = x;
+
+        stage.update();
     }
 }
