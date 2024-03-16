@@ -21,11 +21,13 @@ export class CoordinateSystem extends createjs.Container {
             this.arrowTop = new Arrow(0, 0, 0, -this.sizeTop, this.color, 10, 2, 1);
             this.addChild(this.arrowTop);
         }
-        if (this.sizeBootom != 0) {
+        if (this.sizeBottom != 0) {
+		
             this.arrowTop = new Arrow(0, 0, 0, this.sizeBottom, this.color, 10, 2, 1);
             this.addChild(this.arrowTop);
         }		
 		        if (this.sizeLeft!= 0) {
+				
             this.arrowLeft = new Arrow(0, 0, -this.sizeLeft, 0, this.color, 10, 2, 1);
             this.addChild(this.arrowLeft);
         }		
