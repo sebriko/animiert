@@ -1,8 +1,8 @@
 export class ProgressSlider extends createjs.Container {
-    constructor(width, height, minValue, maxValue, defaultValue, font, fontSize, orientation) {
+    constructor(length, buttonSize, minValue, maxValue, defaultValue, font, fontSize, orientation) {
         super();
-        this.width = width;
-        this.height = height;
+        this.length = length;
+        this.buttonSize = buttonSize;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.value = defaultValue;
@@ -34,11 +34,11 @@ export class ProgressSlider extends createjs.Container {
         if (this.orientation === "horizontal") {
             this.background.graphics.setStrokeStyle(1, "round").beginStroke(fillColor);
             this.background.graphics.moveTo(0, 0);
-            this.background.graphics.lineTo(this.width, 0);
+            this.background.graphics.lineTo(this.length, 0);
         } else if (this.orientation === "vertical") {
             this.background.graphics.setStrokeStyle(1, "round").beginStroke(fillColor);
             this.background.graphics.moveTo(0, 0);
-            this.background.graphics.lineTo(0, this.height);
+            this.background.graphics.lineTo(0, this.length);
         }
         this.background.graphics.endFill();
     }
@@ -47,14 +47,14 @@ export class ProgressSlider extends createjs.Container {
         this.thumb.graphics.clear();
         if (state === 0) {
             this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#AAAAAA");
-            this.thumb.graphics.beginLinearGradientFill(["#EFEFEF ", "#DDDDDD"], [0, 1], 0, 0, 0, this.height);
+            this.thumb.graphics.beginLinearGradientFill(["#EFEFEF ", "#DDDDDD"], [0, 1], 0, 0, 0, this.buttonSize);
         } else if (state === 1) {
             this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
-            this.thumb.graphics.beginLinearGradientFill(["#EFEFEF", "#EEEEEE"], [0, 1], 0, 0, 0, this.height);
+            this.thumb.graphics.beginLinearGradientFill(["#EFEFEF", "#EEEEEE"], [0, 1], 0, 0, 0, this.buttonSize);
         }
 
-        const radius = this.height / 2;
-        const triangleSize = this.height;
+        const radius = this.buttonSize / 2;
+        const triangleSize = this.buttonSize;
         let x1, y1, x2, y2, x3, y3;
 
         if (this.orientation === "horizontal") {
@@ -95,12 +95,12 @@ export class ProgressSlider extends createjs.Container {
 
     getThumbPositionX() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
-        return percentage * (this.width);
+        return percentage * (this.length);
     }
 
     getThumbPositionY() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
-        return percentage * (this.height);
+        return percentage * (this.length);
     }
 
     handleThumbMouseOver(event) {
@@ -122,13 +122,13 @@ export class ProgressSlider extends createjs.Container {
 
         if (this.orientation === "horizontal") {
             newX = point.x + this.offset.x;
-            newX = Math.max(0, Math.min(newX, this.width));
-            percentage = newX / this.width;
+            newX = Math.max(0, Math.min(newX, this.length));
+            percentage = newX / this.length;
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         } else if (this.orientation === "vertical") {
             newY = point.y + this.offset.y;
-            newY = Math.max(0, Math.min(newY, this.height));
-            percentage = newY / this.height;
+            newY = Math.max(0, Math.min(newY, this.length));
+            percentage = newY / this.length;
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         }
 
