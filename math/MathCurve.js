@@ -1,5 +1,5 @@
 export class MathCurve extends createjs.Container {
-    constructor(equation, startX, endX, scaleValueX, color=createjs.Graphics.getRGB(255, 0, 0), thickness=1) {
+    constructor(equation, startX, endX, step, scaleValueX, color=createjs.Graphics.getRGB(255, 0, 0), thickness=1) {
         super();
         this.equation = equation;
         this.color = color;
@@ -11,7 +11,7 @@ export class MathCurve extends createjs.Container {
 		this.markColor = createjs.Graphics.getRGB(0, 0, 0);
 		this.markRadius = 3;
         this.thickness = thickness;
-
+this.step = step;
         // Erstelle die Kurve
         this.curve = new createjs.Shape();
         this.curve.graphics.setStrokeStyle(this.thickness);
@@ -31,9 +31,11 @@ export class MathCurve extends createjs.Container {
         this.curve.graphics.beginStroke(this.color);
         this.curve.graphics.setStrokeStyle(this.thickness);
 
-        for (let x = this.startX; x <= this.endX; x += 1) {
-            const y = this.equation(x);
-            if (x === this.endX) {
+        for (let x = this.startX; x <= this.endX; x += this.step) {
+            const y = -this.equation(x);
+			console.log(x)
+			console.log(y)
+            if (x === this.startX) {
                 this.curve.graphics.moveTo(x * this.scaleValueX, y);
             } else {
                 this.curve.graphics.lineTo(x * this.scaleValueX, y);
