@@ -1,13 +1,13 @@
 export class Arrow extends createjs.Container {
-    constructor(startX, startY, endX, endY, color = createjs.Graphics.getRGB(255, 0, 0), size, ratio, thickness=1) {
+    constructor(startX, startY, endX, endY, color = createjs.Graphics.getRGB(255, 0, 0), arrowLength, arrowWidth, thickness=1) {
         super();
         this.color = color;
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
-        this.size = size;
-        this.ratio = ratio;
+        this.arrowLength = arrowLength;
+        this.arrowWidth = arrowWidth;
 		this.rotation = 0;
         this.thickness = thickness;
 		this.originalRotation = 0;
@@ -38,8 +38,8 @@ export class Arrow extends createjs.Container {
 
     // Zeichne die Pfeilspitze 
     this.arrow.graphics.moveTo(arrowLength, 0);
-    this.arrow.graphics.lineTo(arrowLength-this.size, -this.ratio);
-    this.arrow.graphics.lineTo(arrowLength-this.size, this.ratio);
+    this.arrow.graphics.lineTo(arrowLength-this.arrowLength, -this.arrowWidth/2);
+    this.arrow.graphics.lineTo(arrowLength-this.arrowLength, this.arrowWidth/2);
     this.arrow.graphics.lineTo(arrowLength, 0);
 
     this.arrow.graphics.endFill(); // Beende die Füllung
