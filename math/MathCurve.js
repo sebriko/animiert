@@ -33,8 +33,7 @@ this.step = step;
 
         for (let x = this.startX; x <= this.endX; x += this.step) {
             const y = -this.equation(x);
-			console.log(x)
-			console.log(y)
+		
             if (x === this.startX) {
                 this.curve.graphics.moveTo(x * this.scaleValueX, y);
             } else {
