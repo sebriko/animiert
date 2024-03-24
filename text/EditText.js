@@ -8,6 +8,8 @@ export class EditText extends createjs.Container {
         this.cursor = "text";
 
         this.drawText();
+        this.drawCursor(); // Zeichne den Cursor
+
         stage.addChild(this);
 		
 		let self = this;
@@ -22,13 +24,13 @@ export class EditText extends createjs.Container {
                     self.textObj.text = self.textObj.text.slice(0, -1);
                 } else {
                     // Ansonsten Text hinzufügen
-					
-					if (event.keyCode !== 8)
-                    self.textObj.text += event.key;
-				
-				
-				
+                    if (event.keyCode !== 8) {
+                        self.textObj.text += event.key;
+                    }
                 }
+
+                // Aktualisiere den Cursor
+                self.updateCursor();
 
                 stage.update();
             }
@@ -47,5 +49,22 @@ export class EditText extends createjs.Container {
         // Füge das Textobjekt zur Containerklasse hinzu
         this.addChild(this.textObj);
     }
-}
 
+    drawCursor() {
+        // Zeichne den Cursor als vertikales Rechteck
+        this.cursorObj = new createjs.Shape();
+        this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
+
+        // Positioniere den Cursor neben dem Text
+        this.cursorObj.x = this.textObj.getMeasuredWidth() + 2; // Positioniere den Cursor 2 Pixel rechts vom Text
+        this.cursorObj.y = 0;
+
+        // Füge den Cursor zur Containerklasse hinzu
+        this.addChild(this.cursorObj);
+    }
+
+    updateCursor() {
+        // Aktualisiere die Position des Cursors basierend auf der aktuellen Breite des Textes
+        this.cursorObj.x = this.textObj.getMeasuredWidth() + 2; // Positioniere den Cursor 2 Pixel rechts vom Text
+    }
+}
