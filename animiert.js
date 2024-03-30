@@ -7,7 +7,7 @@ import { CoordinateSystem } from './math/CoordinateSystem.js';
 import { ButtonSlider } from './ui/ButtonSlider.js';
 import { ProgressSlider } from './ui/ProgressSlider.js';
 import { Checkbox } from './ui/Checkbox.js';
-
+import { RadioButton } from './ui/RadioButton.js';
 
 export var animiert = {
 
@@ -18,7 +18,8 @@ export var animiert = {
 	CoordinateSystem: CoordinateSystem,
 	ButtonSlider: ButtonSlider,
 	ProgressSlider: ProgressSlider,
-	Checkbox: Checkbox
+	Checkbox: Checkbox,
+	RadioButton: RadioButton
 	
 };
 
