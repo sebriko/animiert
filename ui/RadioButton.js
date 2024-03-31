@@ -3,6 +3,13 @@ const radioButtonGroups = {};
 /**
  * Creates a Radio Button 
  * @extends createjs.Container
+ * 
+ * @example
+ * // Creating a radio button
+ * const radioButton1 = new RadioButton(true, 20, "Option 1", "Arial", 14, "group1");
+ * 
+ * // Creating another radio button in the same group
+ * const radioButton2 = new RadioButton(false, 20, "Option 2", "Arial", 14, "group1");
  */
 
 export class RadioButton extends createjs.Container {
