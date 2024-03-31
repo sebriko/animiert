@@ -50,6 +50,9 @@ export class RadioButton extends createjs.Container {
 
         this.updateRadioButton();
         this.addToGroup(this.groupName, this);
+		
+		this.addChild(this.container);
+		stage.addChild(this);
     }
 
     drawBackground() {
