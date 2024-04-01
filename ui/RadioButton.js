@@ -122,9 +122,19 @@ export class RadioButton extends createjs.Container {
         this.dot.visible = this.checked;
     }
 
-    updateLabel() {
-        this.labelText.text = this.label;
-    }
+    updateLabel(label) {
+    this.label = label;
+    this.labelText.text = label;
+    this.labelBackground.graphics.clear();
+    this.labelBackground.graphics.beginFill("#FFFFFF");
+    this.labelBackground.graphics.drawRect(
+        this.size + 5,
+        this.size / 2 - this.fontSize / 2,
+        this.labelText.getMeasuredWidth(), // Verwenden Sie die gemessene Breite des Textes
+        this.labelText.getBounds().height
+    );
+    this.labelBackground.graphics.endFill();
+}
 
     setFont(font) {
         this.font = font;
