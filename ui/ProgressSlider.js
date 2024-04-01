@@ -1,4 +1,19 @@
+/**
+ * Represents a progress slider control.
+ * @extends {createjs.Container}
+ */
 export class ProgressSlider extends createjs.Container {
+    /**
+     * Creates an instance of ProgressSlider.
+     * @param {number} length The length of the slider.
+     * @param {number} buttonSize The size of the slider button.
+     * @param {number} minValue The minimum value of the slider.
+     * @param {number} maxValue The maximum value of the slider.
+     * @param {number} defaultValue The default value of the slider.
+     * @param {string} font The font of the slider.
+     * @param {number} fontSize The font size of the slider.
+     * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
+     */
     constructor(length, buttonSize, minValue, maxValue, defaultValue, font, fontSize, orientation) {
         super();
         this.length = length;
@@ -29,6 +44,10 @@ export class ProgressSlider extends createjs.Container {
         stage.addChild(this.container);
     }
 
+    /**
+     * Draws the background of the slider.
+     * @param {string} fillColor The color of the background fill.
+     */
     drawBackground(fillColor) {
         this.background.graphics.clear();
         if (this.orientation === "horizontal") {
@@ -43,6 +62,10 @@ export class ProgressSlider extends createjs.Container {
         this.background.graphics.endFill();
     }
 
+    /**
+     * Draws the thumb of the slider.
+     * @param {number} state The state of the thumb (0 for normal, 1 for hover).
+     */
     drawThumb(state) {
         this.thumb.graphics.clear();
         if (state === 0) {
@@ -84,6 +107,10 @@ export class ProgressSlider extends createjs.Container {
         this.thumb.y = (this.orientation === "vertical") ? this.getThumbPositionY() : 0;
     }
 
+    /**
+     * Sets the value of the slider.
+     * @param {number} value The value to set.
+     */
     setValue(value) {
         this.value = Math.max(this.minValue, Math.min(value, this.maxValue));
         if (this.orientation === "horizontal") {
@@ -93,29 +120,51 @@ export class ProgressSlider extends createjs.Container {
         }
     }
 
+    /**
+     * Calculates the horizontal position of the thumb.
+     * @returns {number} The horizontal position of the thumb.
+     */
     getThumbPositionX() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
         return percentage * (this.length);
     }
 
+    /**
+     * Calculates the vertical position of the thumb.
+     * @returns {number} The vertical position of the thumb.
+     */
     getThumbPositionY() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
         return percentage * (this.length);
     }
 
+    /**
+     * Handles the mouse over event on the thumb.
+     */
     handleThumbMouseOver(event) {
         this.drawThumb(1);
     }
 
+    /**
+     * Handles the mouse out event on the thumb.
+     */
     handleThumbMouseOut(event) {
         this.drawThumb(0);
     }
 
+    /**
+     * Handles the mouse down event on the thumb.
+     * @param {object} event The mouse down event object.
+     */
     handleThumbMouseDown(event) {
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         this.offset = { x: this.thumb.x - point.x, y: this.thumb.y - point.y };
     }
 
+    /**
+     * Handles the press move event on the thumb.
+     * @param {object} event The press move event object.
+     */
     handleThumbPressMove(event) {
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         let newX, newY, percentage, currentAngle;
@@ -136,4 +185,3 @@ export class ProgressSlider extends createjs.Container {
         drawDynamicElements(currentAngle); // Assuming this function exists elsewhere
     }
 }
-
