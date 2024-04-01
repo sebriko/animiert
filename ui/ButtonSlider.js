@@ -1,4 +1,20 @@
+/**
+ * Represents a button slider control.
+ * @extends {createjs.Container}
+ */
 export class ButtonSlider extends createjs.Container {
+    /**
+     * Creates an instance of ButtonSlider.
+     * @param {number} size The size of the slider.
+     * @param {number} width The width of the slider.
+     * @param {number} height The height of the slider.
+     * @param {number} minValue The minimum value of the slider.
+     * @param {number} maxValue The maximum value of the slider.
+     * @param {number} defaultValue The default value of the slider.
+     * @param {string} font The font of the slider.
+     * @param {number} fontSize The font size of the slider.
+     * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
+     */
     constructor(size, width, height, minValue, maxValue, defaultValue, font, fontSize, orientation) {
         super();
         this.size = size;
@@ -26,11 +42,19 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.addEventListener("mouseout", this.onThumbMouseOut.bind(this));
     }
 
+    /**
+     * Handles the mouse down event on the thumb.
+     * @param {object} event The mouse down event object.
+     */
     onThumbMouseDown(event) {
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         this.offset = { x: this.thumb.x - point.x, y: this.thumb.y - point.y };
     }
 
+    /**
+     * Handles the press move event on the thumb.
+     * @param {object} event The press move event object.
+     */
     onThumbPressMove(event) {
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         let newX, newY;
@@ -44,14 +68,24 @@ export class ButtonSlider extends createjs.Container {
         }
     }
 
+    /**
+     * Handles the mouse over event on the thumb.
+     */
     onThumbMouseOver() {
         this.drawThumb("#228B22");
     }
 
+    /**
+     * Handles the mouse out event on the thumb.
+     */
     onThumbMouseOut() {
         this.drawThumb("#AAAAAA");
     }
 
+    /**
+     * Draws the thumb of the slider.
+     * @param {string} strokeColor The color of the thumb stroke.
+     */
     drawThumb(strokeColor) {
         if (this.orientation === "vertical") {
             this.drawThumbVertical(strokeColor);
@@ -60,6 +94,10 @@ export class ButtonSlider extends createjs.Container {
         }
     }
 
+    /**
+     * Draws the horizontal thumb of the slider.
+     * @param {string} strokeColor The color of the thumb stroke.
+     */
     drawThumbHorizontal(strokeColor) {
         const thumbWidth = this.height;
         const thumbHeight = this.width;
@@ -76,6 +114,10 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.y = 0;
     }
 
+    /**
+     * Draws the vertical thumb of the slider.
+     * @param {string} strokeColor The color of the thumb stroke.
+     */
     drawThumbVertical(strokeColor) {
         const thumbWidth = this.width;
         const thumbHeight = this.height;
@@ -92,14 +134,26 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.y = this.getThumbPositionY();
     }
 
+    /**
+     * Calculates the horizontal position of the thumb.
+     * @returns {number} The horizontal position of the thumb.
+     */
     getThumbPositionX() {
         return (this.value - this.minValue) / (this.maxValue - this.minValue) * this.size;
     }
 
+    /**
+     * Calculates the vertical position of the thumb.
+     * @returns {number} The vertical position of the thumb.
+     */
     getThumbPositionY() {
         return (this.value - this.minValue) / (this.maxValue - this.minValue) * this.size;
     }
 
+    /**
+     * Draws the background of the slider.
+     * @param {string} fillColor The color of the background fill.
+     */
     drawBackground(fillColor) {
         if (this.orientation === "vertical") {
             this.drawBackgroundVertical(fillColor);
@@ -108,14 +162,26 @@ export class ButtonSlider extends createjs.Container {
         }
     }
 
+    /**
+     * Draws the horizontal background of the slider.
+     * @param {string} fillColor The color of the background fill.
+     */
     drawBackgroundHorizontal(fillColor) {
         this.background.graphics.clear().beginFill(fillColor).drawRect(0,0, this.size, 1).endFill();
     }
 
+    /**
+     * Draws the vertical background of the slider.
+     * @param {string} fillColor The color of the background fill.
+     */
     drawBackgroundVertical(fillColor) {
         this.background.graphics.clear().beginFill(fillColor).drawRect(0,0, 1, this.size).endFill();
     }
 
+    /**
+     * Sets the value of the slider.
+     * @param {number} value The value to set.
+     */
     setValue(value) {
         this.value = Math.max(this.minValue, Math.min(value, this.maxValue));
         if (this.orientation === "horizontal") {
