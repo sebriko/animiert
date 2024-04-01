@@ -1,4 +1,3 @@
-
 import { Arrow } from './com/Arrow.js';
 import { Text } from './text/Text.js'; 
 import { EditText } from './text/EditText.js'; 
@@ -8,18 +7,6 @@ import { ButtonSlider } from './ui/ButtonSlider.js';
 import { ProgressSlider } from './ui/ProgressSlider.js';
 import { Checkbox } from './ui/Checkbox.js';
 import { RadioButton } from './ui/RadioButton.js';
+import { Line } from './com/Line.js';
 
-export var animiert = {
-
-	Arrow: Arrow,
-	Text: Text,
-	EditText: EditText,
-	MathCurve: MathCurve,
-	CoordinateSystem: CoordinateSystem,
-	ButtonSlider: ButtonSlider,
-	ProgressSlider: ProgressSlider,
-	Checkbox: Checkbox,
-	RadioButton: RadioButton
-	
-};
-
+export const animiert = { Arrow, Text, EditText, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line };
