@@ -1,8 +1,17 @@
 /**
- * A Checkbox class for creating and managing checkboxes.
- * Extends the createjs.Container object.
- * @extends createjs.Container
+ * Creates a Checkbox
+ 
+ * @example
+ * // Erzeugt eine Checkbox mit dem Standardzustand "unchecked", Größe 20, Label "Option 1",
+ * // Schriftart "Arial", und Schriftgröße 12.
+ * const checkbox = new Checkbox(false, 20, "Option 1", "Arial", 12);
+ * stage.addChild(checkbox);
+ * 
+ * // Aktualisiert die Schriftgröße der Checkbox auf 16 und ändert das Label in "Neue Option".
+ * checkbox.setFontSize(16);
+ * checkbox.updateLabel("Neue Option");
  */
+  
 export class Checkbox extends createjs.Container {
     /**
      * Creates a Checkbox instance.
@@ -19,7 +28,6 @@ export class Checkbox extends createjs.Container {
         this.label = label;
         this.font = font;
         this.fontSize = fontSize;
-        this.active = false;
 
         // Create the checkbox background as a Shape object
         this.background = new createjs.Shape();
@@ -35,20 +43,13 @@ export class Checkbox extends createjs.Container {
         // Create the label of the checkbox as a Text object
         this.labelText = new createjs.Text(this.label, this.fontSize + "px " + this.font, "#000000");
         this.labelText.textAlign = "left";
-        this.labelText.textBaseline = "middle";
+        this.labelText.textBaseline = "top";
         this.labelText.x = this.size + 5;
-        this.labelText.y = this.size / 2;
+        this.labelText.y = (this.size - this.labelText.getMeasuredHeight()) / 2;
 
         // Create the rectangle around the text (needed for hover effect)
         this.labelBackground = new createjs.Shape();
-        this.labelBackground.graphics.beginFill("#FFFFFF");
-        this.labelBackground.graphics.drawRect(
-            this.size + 5,
-            this.size / 2 - this.fontSize / 2,
-            this.labelText.getBounds().width,
-            this.labelText.getBounds().height
-        );
-        this.labelBackground.graphics.endFill();
+        this.drawLabelBackground();
 
         // Create the checkbox container and add elements
         this.container = new createjs.Container();
@@ -74,21 +75,12 @@ export class Checkbox extends createjs.Container {
         // Update checkbox state
         this.updateCheckbox();
 
-        // Click event
-        this.container.addEventListener("click", () => {
-            this.checked = !this.checked;
-            this.updateCheckbox();
-            console.log("Checkbox state: " + (this.checked ? "checked" : "unchecked"));
-        });
-		
-		this.addChild(this.container);
-		stage.addChild(this);
+        // Add checkbox container to stage
+        this.addChild(this.container);
+        stage.addChild(this);
     }
 
-    /**
-     * Draws the checkmark inside the checkbox.
-     * @private
-     */
+    // Draws the checkmark inside the checkbox
     drawCheckmark() {
         this.checkmark.graphics.clear();
         this.checkmark.graphics.setStrokeStyle(2).beginStroke("#228B22");
@@ -98,57 +90,68 @@ export class Checkbox extends createjs.Container {
         this.checkmark.graphics.endStroke();
     }
 
-    /**
-     * Updates the visual state of the checkbox according to the current 'checked' value.
-     * @private
-     */
+    // Updates the visual state of the checkbox according to the current 'checked' value
     updateCheckbox() {
         this.checkmark.visible = this.checked;
     }
 
-    /**
-     * Updates the label of the checkbox.
-     * @param {string} label - The new label of the checkbox.
-     */
+    // Updates the label of the checkbox
     updateLabel(label) {
         this.label = label;
         this.labelText.text = label;
         this.labelBackground.graphics.clear();
-        this.labelBackground.graphics.beginFill("#FFFFFF");
-        this.labelBackground.graphics.drawRect(
-            this.size + 5,
-            this.size / 2 - this.fontSize / 2,
-            this.labelText.getBounds().width,
-            this.labelText.getBounds().height
-        );
-        this.labelBackground.graphics.endFill();
+        this.drawLabelBackground();
     }
 
-    /**
-     * Sets the font for the label of the checkbox.
-     * @param {string} font - The new font.
-     */
+    // Sets the font for the label of the checkbox
     setFont(font) {
         this.font = font;
         this.labelText.font = this.fontSize + "px " + font;
     }
 
-    /**
-     * Sets the font size for the label of the checkbox.
-     * @param {number} fontSize - The new font size.
-     */
+    // Sets the font size for the label of the checkbox
     setFontSize(fontSize) {
         this.fontSize = fontSize;
         this.labelText.font = fontSize + "px " + this.font;
         this.labelText.lineHeight = fontSize + 4;
         this.labelBackground.graphics.clear();
+        this.drawLabelBackground();
+    }
+
+    // Draws the rectangle around the text (needed for hover effect)
+    drawLabelBackground() {
         this.labelBackground.graphics.beginFill("#FFFFFF");
         this.labelBackground.graphics.drawRect(
             this.size + 5,
-            this.size / 2 - this.fontSize / 2,
-            this.labelText.getBounds().width,
-            this.labelText.getBounds().height
+            this.size / 2 - this.labelText.getMeasuredHeight() / 2,
+            this.labelText.getMeasuredWidth(),
+            this.labelText.getMeasuredHeight()
         );
         this.labelBackground.graphics.endFill();
+    }
+
+    // Hover effect handler for mouseover event
+    handleMouseOver() {
+        this.background.graphics.clear();
+        this.background.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
+        this.background.graphics.beginFill("#FFFFFF");
+        this.background.graphics.drawRect(0, 0, this.size, this.size);
+        this.background.graphics.endFill();
+    }
+
+    // Hover effect handler for mouseout event
+    handleMouseOut() {
+        this.background.graphics.clear();
+        this.background.graphics.setStrokeStyle(0.5).beginStroke("#CCCCC");
+        this.background.graphics.beginFill("#FFFFFF");
+        this.background.graphics.drawRect(0, 0, this.size, this.size);
+        this.background.graphics.endFill();
+    }
+
+    // Click event handler
+    handleClick() {
+        this.checked = !this.checked;
+        this.updateCheckbox();
+        console.log("Checkbox state: " + (this.checked ? "checked" : "unchecked"));
     }
 }
