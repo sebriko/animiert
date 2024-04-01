@@ -2,8 +2,7 @@ const radioButtonGroups = {};
 
 /**
  * Creates a Radio Button 
- * @extends createjs.Container
- * 
+
  * @example
  * // Creating a radio button
  * const radioButton1 = new RadioButton(true, 20, "Option 1", "Arial", 14, "group1");
@@ -38,10 +37,10 @@ export class RadioButton extends createjs.Container {
         this.drawDot();
 
         this.labelText = new createjs.Text(this.label, this.fontSize + "px " + this.font, "#000000");
-        this.labelText.textAlign = "left";
-        this.labelText.textBaseline = "middle";
-        this.labelText.x = this.size + 5;
-        this.labelText.y = this.size / 2;
+        this.labelText.textAlign = "left"; // Align text to the left
+        this.labelText.textBaseline = "top";
+        this.labelText.x = this.size * 1.5; // Position text to the right of the circle
+        this.labelText.y = (this.size - this.labelText.getMeasuredHeight()) / 2; // Vertically center the text
 
         this.labelText.mouseEnabled = true;
 
@@ -58,8 +57,8 @@ export class RadioButton extends createjs.Container {
         this.updateRadioButton();
         this.addToGroup(this.groupName, this);
 		
-		this.addChild(this.container);
-		stage.addChild(this);
+        this.addChild(this.container);
+        stage.addChild(this);
     }
 
     drawBackground() {
