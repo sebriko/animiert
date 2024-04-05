@@ -49,6 +49,11 @@ export class Line extends createjs.Container {
         const dy = this.endY - this.startY;
         const lineLength = Math.sqrt(dx * dx + dy * dy);
         const originalRotation = Math.atan2(dy, dx) * 180 / Math.PI;
+		
+		
+		console.log(originalRotation)
+
+
 
         this.line.graphics.moveTo(0, 0);
         this.line.graphics.lineTo(lineLength, 0);
