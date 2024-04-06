@@ -51,9 +51,7 @@ export class Line extends createjs.Container {
         const originalRotation = Math.atan2(dy, dx) * 180 / Math.PI;
 		
 		
-		console.log(originalRotation)
-
-
+	
 
         this.line.graphics.moveTo(0, 0);
         this.line.graphics.lineTo(lineLength, 0);
@@ -61,6 +59,8 @@ export class Line extends createjs.Container {
         this.line.graphics.endStroke();
 
         this.line.rotation = originalRotation;
+		
+		this.line.x = this.startX;
 
         stage.update();
     }

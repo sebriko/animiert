@@ -24,8 +24,10 @@ export class GuideLines extends createjs.Container {
         const endX = this.currentValue;
         const endY = currentResult;
 
+
+
         // Update the coordinates of the line
-        this.line.setStartEnd(startX+1, startY, endX, endY);
+        this.line.setStartEnd(startX, startY, endX, endY);
     }
 
     setNewValue(newCurrentValue) {
