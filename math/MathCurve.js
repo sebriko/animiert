@@ -32,7 +32,7 @@ this.step = step;
         this.curve.graphics.setStrokeStyle(this.thickness);
 
         for (let x = this.startX; x <= this.endX; x += this.step) {
-            const y = -this.equation(x);
+            const y = this.equation(x);
 		
             if (x === this.startX) {
                 this.curve.graphics.moveTo(x * this.scaleValueX, y);
