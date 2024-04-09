@@ -28,10 +28,10 @@ export class ButtonSlider extends createjs.Container {
         this.orientation = orientation || "horizontal";
 
         this.background = new createjs.Shape();
-        this.drawBackground("#CCCCCC");
+        this.drawBackground("#555555");
 
         this.thumb = new createjs.Shape();
-        this.drawThumb("#888888");
+        this.drawThumb("#999999");
 
         this.container = new createjs.Container();
         this.container.addChild(this.background, this.thumb);
@@ -40,7 +40,10 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.addEventListener("mouseout", this.onThumbMouseOut.bind(this));
         this.thumb.addEventListener("mousedown", this.onThumbMouseDown.bind(this));
         this.thumb.addEventListener("pressmove", this.onThumbPressMove.bind(this));
-
+		
+		this.addChild(this.container);
+		stage.addChild(this);
+		stage.enableMouseOver();
     }
 
     /**
@@ -48,7 +51,7 @@ export class ButtonSlider extends createjs.Container {
      * @param {object} event The mouse down event object.
      */
     onThumbMouseDown(event) {
-		console.log("mousedoen")
+		
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         this.offset = { x: this.thumb.x - point.x, y: this.thumb.y - point.y };
     }
@@ -58,7 +61,7 @@ export class ButtonSlider extends createjs.Container {
      * @param {object} event The press move event object.
      */
     onThumbPressMove(event) {
-		console.log("pressmove")
+	
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         let newX, newY;
         
@@ -75,7 +78,7 @@ export class ButtonSlider extends createjs.Container {
      * Handles the mouse over event on the thumb.
      */
     onThumbMouseOver(event) {
-		console.log("over")
+		console.log("Maus ist drüber")
         this.drawThumb("#ff0000");
     }
 
@@ -84,7 +87,7 @@ export class ButtonSlider extends createjs.Container {
      */
     onThumbMouseOut(event) {
 		console.log("out")
-        this.drawThumb("#888888");
+        this.drawThumb("#999999");
     }
 
     /**
@@ -111,7 +114,7 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.graphics.clear().beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, thumbWidth, 0)
             .setStrokeStyle(0.5, "round").beginStroke(strokeColor)
             .drawRoundRect(-thumbWidth/2, -thumbHeight/2, thumbWidth, thumbHeight, borderRadius)
-            .setStrokeStyle(0.5, "round").beginStroke("rgba(180, 0, 180, 0.9)")
+            .setStrokeStyle(0.5, "round").beginStroke("rgba(20, 20, 20, 0.9)")
             .moveTo(0, -thumbHeight/2).lineTo(0, thumbHeight/2).endFill();
 
         this.thumb.setBounds(0, 0, thumbWidth, thumbHeight);
@@ -131,7 +134,7 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.graphics.clear().beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, thumbHeight)
             .setStrokeStyle(0.5, "round").beginStroke(strokeColor)
             .drawRoundRect(-thumbWidth/2, -thumbHeight/2, thumbWidth, thumbHeight, borderRadius)
-            .setStrokeStyle(0.5, "round").beginStroke("rgba(180, 180, 180, 0.9)")
+            .setStrokeStyle(0.5, "round").beginStroke("rgba(20, 20, 20, 0.9)")
             .moveTo(-thumbWidth/2, 0).lineTo(thumbWidth/2, 0).endFill();
 
         this.thumb.setBounds(0, 0, thumbWidth, thumbHeight);
