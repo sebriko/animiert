@@ -42,6 +42,7 @@ export class ProgressSlider extends createjs.Container {
         this.thumb.addEventListener("pressmove", this.handleThumbPressMove.bind(this));
 
         stage.addChild(this.container);
+		stage.enableMouseOver();
     }
 
     /**

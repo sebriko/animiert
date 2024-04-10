@@ -92,6 +92,7 @@ export class Checkbox extends createjs.Container {
 		
 		this.addChild(this.container);
 		stage.addChild(this);
+		stage.enableMouseOver();
     }
 
     /**

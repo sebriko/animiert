@@ -59,6 +59,7 @@ export class RadioButton extends createjs.Container {
 		
         this.addChild(this.container);
         stage.addChild(this);
+		stage.enableMouseOver();
     }
 
     drawBackground() {
