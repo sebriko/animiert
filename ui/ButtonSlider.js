@@ -14,6 +14,16 @@ export class ButtonSlider extends createjs.Container {
      * @param {string} font The font of the slider.
      * @param {number} fontSize The font size of the slider.
      * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
+     * 
+     * @example
+     * // Example usage:
+     * // Create a new ButtonSlider instance
+     * const slider = new ButtonSlider(100, 200, 20, 0, 100, 50, "Arial", 14, "horizontal");
+     * // Add an event listener to handle slider value changes
+     * slider.addEventListener("change", function() {
+     *     // Here you can define your reaction to slider changes
+     *     console.log("Slider value changed:", slider.value);
+     * });
      */
     constructor(size, width, height, minValue, maxValue, defaultValue, font, fontSize, orientation) {
         super();
@@ -197,5 +207,10 @@ export class ButtonSlider extends createjs.Container {
         } else if (this.orientation === "vertical") {
             this.thumb.y = this.getThumbPositionY();
         }
+		 this.dispatchChangeEvent();
     }
+	
+	dispatchChangeEvent() {
+    this.dispatchEvent("change");
+}
 }
