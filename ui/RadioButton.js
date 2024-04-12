@@ -48,7 +48,7 @@ export class RadioButton extends createjs.Container {
         this.drawLabelBackground();
 
         this.container = new createjs.Container();
-        this.container.addChild(this.background, this.dot, this.labelBackground, this.labelText);
+        this.container.addChild(this.labelBackground, this.background, this.dot, this.labelText);
 
         this.container.addEventListener("mouseover", this.handleMouseOver.bind(this));
         this.container.addEventListener("mouseout", this.handleMouseOut.bind(this));
@@ -77,17 +77,17 @@ export class RadioButton extends createjs.Container {
         this.dot.graphics.endFill();
     }
 
-    drawLabelBackground() {
-        this.labelBackground.graphics.clear();
-        this.labelBackground.graphics.beginFill("#FFFFFF");
-        this.labelBackground.graphics.drawRect(
-            this.size + 5,
-            this.size / 2 - this.fontSize / 2,
-            this.labelText.getBounds().width,
-            this.labelText.getBounds().height
-        );
-        this.labelBackground.graphics.endFill();
-    }
+drawLabelBackground(color = "#FFFFFF") {
+    this.labelBackground.graphics.clear();
+    this.labelBackground.graphics.beginFill(color);
+    this.labelBackground.graphics.drawRect(
+        this.size - 20,
+        (this.size - this.labelText.getMeasuredHeight()) / 2 -5,
+        this.labelText.getBounds().width+40,
+        this.labelText.getBounds().height+10
+    );
+    this.labelBackground.graphics.endFill();
+}
 
     handleMouseOver() {
         this.background.graphics.clear();

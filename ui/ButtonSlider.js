@@ -16,8 +16,6 @@ export class ButtonSlider extends createjs.Container {
      * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
      * 
      * @example
-     * // Example usage:
-     * // Create a new ButtonSlider instance
      * const slider = new ButtonSlider(100, 200, 20, 0, 100, 50, "Arial", 14, "horizontal");
      * // Add an event listener to handle slider value changes
      * slider.addEventListener("change", function() {
