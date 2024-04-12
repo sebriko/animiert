@@ -50,6 +50,10 @@ export class Checkbox extends createjs.Container {
 
         // Create the rectangle around the text (needed for hover effect)
         this.labelBackground = new createjs.Shape();
+		this.drawLabelBackground();
+		
+		
+		
         this.labelBackground.graphics.beginFill("#FFFFFF");
         this.labelBackground.graphics.drawRect(
             this.size + 5,
@@ -58,10 +62,13 @@ export class Checkbox extends createjs.Container {
             this.labelText.getBounds().height
         );
         this.labelBackground.graphics.endFill();
+		
+		
+		
 
         // Create the checkbox container and add elements
         this.container = new createjs.Container();
-        this.container.addChild(this.background, this.checkmark, this.labelBackground, this.labelText);
+        this.container.addChild(this.labelBackground, this.background, this.checkmark, this.labelText);
 
         // Hover effect for checkbox
         this.container.addEventListener("mouseover", () => {
@@ -123,16 +130,21 @@ export class Checkbox extends createjs.Container {
     updateLabel(label) {
         this.label = label;
         this.labelText.text = label;
-        this.labelBackground.graphics.clear();
-        this.labelBackground.graphics.beginFill("#FFFFFF");
-        this.labelBackground.graphics.drawRect(
-            this.size + 5,
-            this.size / 2 - this.fontSize / 2,
-            this.labelText.getBounds().width,
-            this.labelText.getBounds().height
-        );
-        this.labelBackground.graphics.endFill();
+    
     }
+	
+	
+	drawLabelBackground(color = "#FFFFFF") {
+    this.labelBackground.graphics.clear();
+    this.labelBackground.graphics.beginFill(color);
+    this.labelBackground.graphics.drawRect(
+        this.size - 20,
+        (this.size - this.labelText.getMeasuredHeight()) / 2 -5,
+        this.labelText.getBounds().width+40,
+        this.labelText.getBounds().height+10
+    );
+    this.labelBackground.graphics.endFill();
+}
 
     /**
      * Sets the font for the label of the checkbox.
@@ -151,14 +163,6 @@ export class Checkbox extends createjs.Container {
         this.fontSize = fontSize;
         this.labelText.font = fontSize + "px " + this.font;
         this.labelText.lineHeight = fontSize + 4;
-        this.labelBackground.graphics.clear();
-        this.labelBackground.graphics.beginFill("#FFFFFF");
-        this.labelBackground.graphics.drawRect(
-            this.size + 5,
-            this.size / 2 - this.fontSize / 2,
-            this.labelText.getBounds().width,
-            this.labelText.getBounds().height
-        );
-        this.labelBackground.graphics.endFill();
+
     }
 }
