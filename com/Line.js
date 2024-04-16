@@ -61,7 +61,7 @@ export class Line extends createjs.Container {
         this.line.rotation = originalRotation;
 		
 		this.line.x = this.startX;
-
+		this.line.y = this.startY;
         stage.update();
     }
 
