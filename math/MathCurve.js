@@ -38,11 +38,14 @@ export class MathCurve extends createjs.Container {
         this.markedCircle.graphics.setStrokeStyle(5);
         this.addChild(this.markedCircle);
 
-        this.line = new Line(0, 0, 0, 0, color, thickness); // Create a Line object
-        this.addChild(this.line); // Add the line to the container
+        this.vGuideLine = new Line(0, 0, 0, 0, color, thickness);
+        this.addChild(this.vGuideLine);
+
+        this.hGuideLine = new Line(0, 0, 0, 0, color, thickness); 
+        this.addChild(this.hGuideLine); 
 
         this.drawCurve();
-        stage.addChild(this); // Füge den Container zur Bühne hinzu
+        stage.addChild(this); 
     }
 
     /**
@@ -117,7 +120,7 @@ export class MathCurve extends createjs.Container {
      * Draws guidelines at a specified x-coordinate on the curve.
      * @param {number} [x=this.markedX] - The x-coordinate where guidelines should be drawn.
      */
-    drawGuidelines(x=this.markedX) {
+    drawMarker(x=this.markedX, withLines=true) {
         if (!this.markerInitialized) {
             this.setMarkProperties();
         }
@@ -133,6 +136,9 @@ export class MathCurve extends createjs.Container {
         this.markedCircle.y = markedY;
 
         // Update the coordinates of the line
-        this.line.setStartEnd(startX, startY, endX, endY);
+		if (withLines===true) {
+        this.vGuideLine.setStartEnd(startX, startY, endX, endY);
+		this.hGuideLine.setStartEnd(0, endY, endX, endY);
+		}
     }
 }
