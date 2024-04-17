@@ -11,8 +11,6 @@ export class ButtonSlider extends createjs.Container {
      * @param {number} minValue The minimum value of the slider.
      * @param {number} maxValue The maximum value of the slider.
      * @param {number} defaultValue The default value of the slider.
-     * @param {string} font The font of the slider.
-     * @param {number} fontSize The font size of the slider.
      * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
      * 
      * @example
@@ -23,7 +21,7 @@ export class ButtonSlider extends createjs.Container {
      *     console.log("Slider value changed:", slider.value);
      * });
      */
-    constructor(size, width, height, minValue, maxValue, defaultValue, font, fontSize, orientation) {
+    constructor(size, width, height, minValue, maxValue, defaultValue, orientation) {
         super();
         this.size = size;
         this.width = width;
@@ -31,8 +29,6 @@ export class ButtonSlider extends createjs.Container {
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.value = defaultValue;
-        this.font = font;
-        this.fontSize = fontSize;
         this.orientation = orientation || "horizontal";
 
         this.background = new createjs.Shape();
@@ -86,7 +82,6 @@ export class ButtonSlider extends createjs.Container {
      * Handles the mouse over event on the thumb.
      */
     onThumbMouseOver(event) {
-		console.log("Maus ist drüber")
         this.drawThumb("#228B22");
     }
 
@@ -94,7 +89,6 @@ export class ButtonSlider extends createjs.Container {
      * Handles the mouse out event on the thumb.
      */
     onThumbMouseOut(event) {
-		console.log("out")
         this.drawThumb("#999999");
     }
 
