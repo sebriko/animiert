@@ -87,7 +87,7 @@ export class ButtonSlider extends createjs.Container {
      */
     onThumbMouseOver(event) {
 		console.log("Maus ist drüber")
-        this.drawThumb("#ff0000");
+        this.drawThumb("#228B22");
     }
 
     /**
