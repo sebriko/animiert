@@ -8,6 +8,9 @@ import { ProgressSlider } from './ui/ProgressSlider.js';
 import { Checkbox } from './ui/Checkbox.js';
 import { RadioButton } from './ui/RadioButton.js';
 import { Line } from './com/Line.js';
+import { BezierCurve } from './com/BezierCurve.js';
+
+
 
 console.log("sefd")
-export const animiert = { Arrow, Text, EditText, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line };
+export const animiert = { Arrow, Text, EditText, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line, BezierCurve };
