@@ -9,8 +9,9 @@ import { Checkbox } from './ui/Checkbox.js';
 import { RadioButton } from './ui/RadioButton.js';
 import { Line } from './com/Line.js';
 import { BezierCurve } from './com/BezierCurve.js';
+import { SplineCurve } from './com/SplineCurve.js';
 
 
 
 console.log("sefd")
-export const animiert = { Arrow, Text, EditText, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line, BezierCurve };
+export const animiert = { Arrow, Text, EditText, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line, BezierCurve, SplineCurve };
