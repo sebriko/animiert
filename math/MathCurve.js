@@ -115,6 +115,20 @@ export class MathCurve extends createjs.Container {
 
         stage.update();
     }
+	
+	
+	/**
+	 * Gibt den y-Wert für einen gegebenen x-Wert basierend auf der mathematischen Gleichung der Kurve zurück.
+	 * @param {number} x - Der x-Wert, für den der y-Wert berechnet werden soll.
+	 * @returns {number} - Der berechnete y-Wert.
+	 */
+	getValue(x) {
+		// Verwende die Gleichung der Kurve, um den y-Wert für den gegebenen x-Wert zu berechnen.
+		const y = this.equation(x);
+		return y;
+	}
+		
+	
 
     /**
      * Draws guidelines at a specified x-coordinate on the curve.
