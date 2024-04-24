@@ -1,70 +1,92 @@
+/**
+ * The `EditText` class represents an editable text field in a CreateJS application.
+ * It allows text editing and includes a cursor that indicates the current position.
+ */
 export class EditText extends createjs.Container {
+    
+    /**
+     * Creates a new instance of the `EditText` class.
+     * 
+     * @param {string} text - The initial text to display in the text field.
+     * @param {string} styles - The styles to apply to the text (e.g., font size, font family).
+     * @param {string} color - The color of the text.
+     */
     constructor(text, styles, color) {
         super();
         
-        this.textValue = text; // Verwende eine Klassenvariable, um den Text zu speichern
+        this.textValue = text; // Store the text value in a class variable
         this.color = color;
         this.styles = styles;
         this.cursor = "text";
 
         this.drawText();
-        this.drawCursor(); // Zeichne den Cursor
+        this.drawCursor(); // Draw the cursor
 
         stage.addChild(this);
-		
-		let self = this;
-		
-		document.addEventListener("keydown", function(event) {
-            // Überprüfen, ob der eingegebene Schlüssel eine Zahl, ein Punkt, ein Komma oder die Backspace-Taste ist
-            if ((event.keyCode >= 48 && event.keyCode <= 57) ||  // Zahlen (0-9)
-                event.keyCode == 190 || event.keyCode == 188 || // Punkt (.) und Komma (,)
+        
+        let self = this;
+        
+        // Listen for keydown events to handle text editing
+        document.addEventListener("keydown", function(event) {
+            // Check if the key is a number, period, comma, or backspace
+            if ((event.keyCode >= 48 && event.keyCode <= 57) ||  // Numbers (0-9)
+                event.keyCode == 190 || event.keyCode == 188 || // Period (.) and comma (,)
                 event.keyCode == 8) {                           // Backspace
 
                 if (event.keyCode == 8 && self.textObj.text.length > 0) {
+                    // Handle backspace key to remove the last character
                     self.textObj.text = self.textObj.text.slice(0, -1);
                 } else {
-                    // Ansonsten Text hinzufügen
+                    // Add text for other keys
                     if (event.keyCode !== 8) {
                         self.textObj.text += event.key;
                     }
                 }
 
-                // Aktualisiere den Cursor
+                // Update the cursor position
                 self.updateCursor();
 
                 stage.update();
             }
         });
-		
     }
 
+    /**
+     * Draws the initial text using the specified parameters.
+     */
     drawText() {
-        // Erstelle ein neues Textobjekt mit den angegebenen Parametern
+        // Create a new text object with the specified parameters
         this.textObj = new createjs.Text(this.textValue, this.styles, this.color);
 
-        // Setze die Position des Textobjekts
+        // Set the position of the text object
         this.textObj.x = 0;
         this.textObj.y = 0;
 
-        // Füge das Textobjekt zur Containerklasse hinzu
+        // Add the text object to the container class
         this.addChild(this.textObj);
     }
 
+    /**
+     * Draws the cursor as a vertical rectangle.
+     */
     drawCursor() {
-        // Zeichne den Cursor als vertikales Rechteck
+        // Create the cursor as a shape and fill it with black color
         this.cursorObj = new createjs.Shape();
         this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
 
-        // Positioniere den Cursor neben dem Text
-        this.cursorObj.x = this.textObj.getMeasuredWidth() + 2; // Positioniere den Cursor 2 Pixel rechts vom Text
+        // Position the cursor next to the text
+        this.cursorObj.x = this.textObj.getMeasuredWidth() + 2; // Position the cursor 2 pixels to the right of the text
         this.cursorObj.y = 0;
 
-        // Füge den Cursor zur Containerklasse hinzu
+        // Add the cursor to the container class
         this.addChild(this.cursorObj);
     }
 
+    /**
+     * Updates the position of the cursor based on the current width of the text.
+     */
     updateCursor() {
-        // Aktualisiere die Position des Cursors basierend auf der aktuellen Breite des Textes
-        this.cursorObj.x = this.textObj.getMeasuredWidth() + 2; // Positioniere den Cursor 2 Pixel rechts vom Text
+        // Update the position of the cursor based on the current width of the text
+        this.cursorObj.x = this.textObj.getMeasuredWidth() + 2; // Position the cursor 2 pixels to the right of the text
     }
 }

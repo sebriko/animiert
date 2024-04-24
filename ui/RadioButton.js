@@ -1,8 +1,8 @@
 const radioButtonGroups = {};
 
 /**
- * Creates a Radio Button 
-
+ * Creates a radio button group and associates radio buttons with a group.
+ * 
  * @example
  * // Creating a radio button
  * const radioButton1 = new RadioButton(true, 20, "Option 1", "Arial", 14, "group1");
@@ -10,16 +10,16 @@ const radioButtonGroups = {};
  * // Creating another radio button in the same group
  * const radioButton2 = new RadioButton(false, 20, "Option 2", "Arial", 14, "group1");
  */
-
 export class RadioButton extends createjs.Container {
-	    /**
+    /**
      * Constructs a new RadioButton object.
-     * @param {boolean} checked - Status of the radio button
-     * @param {number} size - Size of the circle
-     * @param {string} label - Text of the radio button
-     * @param {string} font - Font name
-     * @param {string} fontSize - Font size
-	* @param {string} groupName - Name of the group of other radio buttons
+     * 
+     * @param {boolean} checked - Initial checked status of the radio button.
+     * @param {number} size - Diameter of the radio button.
+     * @param {string} label - Text label associated with the radio button.
+     * @param {string} font - Font name for the label text.
+     * @param {number} fontSize - Font size for the label text.
+     * @param {string} groupName - Name of the radio button group.
      */
     constructor(checked = false, size = 15, label = "", font = "Arial", fontSize = 12, groupName = "") {
         super();
@@ -56,12 +56,15 @@ export class RadioButton extends createjs.Container {
 
         this.updateRadioButton();
         this.addToGroup(this.groupName, this);
-		
+
         this.addChild(this.container);
         stage.addChild(this);
-		stage.enableMouseOver();
+        stage.enableMouseOver();
     }
 
+    /**
+     * Draws the radio button background.
+     */
     drawBackground() {
         this.background.graphics.clear();
         this.background.graphics.setStrokeStyle(0.5).beginStroke("#CCCCC");
@@ -70,6 +73,9 @@ export class RadioButton extends createjs.Container {
         this.background.graphics.endFill();
     }
 
+    /**
+     * Draws the dot for the checked state of the radio button.
+     */
     drawDot() {
         this.dot.graphics.clear();
         this.dot.graphics.beginFill("#228B22");
@@ -77,18 +83,25 @@ export class RadioButton extends createjs.Container {
         this.dot.graphics.endFill();
     }
 
-drawLabelBackground(color = "#FFFFFF") {
-    this.labelBackground.graphics.clear();
-    this.labelBackground.graphics.beginFill(color);
-    this.labelBackground.graphics.drawRect(
-        this.size - 20,
-        (this.size - this.labelText.getMeasuredHeight()) / 2 -5,
-        this.labelText.getBounds().width+40,
-        this.labelText.getBounds().height+10
-    );
-    this.labelBackground.graphics.endFill();
-}
+    /**
+     * Draws the background for the label.
+     * @param {string} [color="#FFFFFF"] - The background color for the label.
+     */
+    drawLabelBackground(color = "#FFFFFF") {
+        this.labelBackground.graphics.clear();
+        this.labelBackground.graphics.beginFill(color);
+        this.labelBackground.graphics.drawRect(
+            this.size - 20,
+            (this.size - this.labelText.getMeasuredHeight()) / 2 - 5,
+            this.labelText.getBounds().width + 40,
+            this.labelText.getBounds().height + 10
+        );
+        this.labelBackground.graphics.endFill();
+    }
 
+    /**
+     * Handles the mouse over event on the radio button.
+     */
     handleMouseOver() {
         this.background.graphics.clear();
         this.background.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
@@ -97,18 +110,21 @@ drawLabelBackground(color = "#FFFFFF") {
         this.background.graphics.endFill();
     }
 
+    /**
+     * Handles the mouse out event on the radio button.
+     */
     handleMouseOut() {
         this.drawBackground();
     }
 
+    /**
+     * Handles the click event on the radio button and updates its checked state.
+     */
     handleClick() {
-		
         if (!this.checked) {
             this.checked = true;
             const group = radioButtonGroups[this.groupName];
-		
             group.forEach(radioButton => {
-				
                 if (radioButton !== this && radioButton.checked) {
                     radioButton.checked = false;
                     radioButton.updateRadioButton();
@@ -118,30 +134,44 @@ drawLabelBackground(color = "#FFFFFF") {
         }
     }
 
+    /**
+     * Updates the radio button display based on its checked state.
+     */
     updateRadioButton() {
-
         this.dot.visible = this.checked;
     }
 
+    /**
+     * Updates the label text of the radio button.
+     * @param {string} label - The new label text.
+     */
     updateLabel(label) {
-    this.label = label;
-    this.labelText.text = label;
-    this.labelBackground.graphics.clear();
-    this.labelBackground.graphics.beginFill("#FFFFFF");
-    this.labelBackground.graphics.drawRect(
-        this.size + 5,
-        this.size / 2 - this.fontSize / 2,
-        this.labelText.getMeasuredWidth(), // Verwenden Sie die gemessene Breite des Textes
-        this.labelText.getBounds().height
-    );
-    this.labelBackground.graphics.endFill();
-}
+        this.label = label;
+        this.labelText.text = label;
+        this.labelBackground.graphics.clear();
+        this.labelBackground.graphics.beginFill("#FFFFFF");
+        this.labelBackground.graphics.drawRect(
+            this.size + 5,
+            this.size / 2 - this.fontSize / 2,
+            this.labelText.getMeasuredWidth(),
+            this.labelText.getBounds().height
+        );
+        this.labelBackground.graphics.endFill();
+    }
 
+    /**
+     * Sets the font of the radio button label.
+     * @param {string} font - The new font.
+     */
     setFont(font) {
         this.font = font;
         this.labelText.font = this.fontSize + "px " + font;
     }
 
+    /**
+     * Sets the font size of the radio button label.
+     * @param {number} fontSize - The new font size.
+     */
     setFontSize(fontSize) {
         this.fontSize = fontSize;
         this.labelText.font = fontSize + "px " + this.font;
@@ -149,6 +179,11 @@ drawLabelBackground(color = "#FFFFFF") {
         this.drawLabelBackground();
     }
 
+    /**
+     * Adds the radio button to a group.
+     * @param {string} groupName - The name of the group.
+     * @param {RadioButton} radioButton - The radio button to be added to the group.
+     */
     addToGroup(groupName, radioButton) {
         if (!radioButtonGroups[groupName]) {
             radioButtonGroups[groupName] = [];

@@ -31,7 +31,7 @@ export class Arrow extends createjs.Container {
         this.addChild(this.arrow);
 
         this.drawArrow();
-        stage.addChild(this); // Add the container to the stage
+        stage.addChild(this); 
     }
 
     /**
@@ -41,7 +41,7 @@ export class Arrow extends createjs.Container {
     drawArrow() {
         this.arrow.graphics.clear();
         this.arrow.graphics.beginStroke(this.color);
-        this.arrow.graphics.beginFill(this.color); // Set fill color
+        this.arrow.graphics.beginFill(this.color); 
 
         this.arrow.graphics.setStrokeStyle(this.thickness);
 
@@ -61,7 +61,7 @@ export class Arrow extends createjs.Container {
         this.arrow.graphics.lineTo(arrowHeadLength - this.arrowHeadLength, this.arrowHeadWidth / 2);
         this.arrow.graphics.lineTo(arrowHeadLength, 0);
 
-        this.arrow.graphics.endFill(); // End fill
+        this.arrow.graphics.endFill();
         this.arrow.graphics.endStroke();
 
         this.arrow.x = this.startX;

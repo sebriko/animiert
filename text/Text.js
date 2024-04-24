@@ -25,6 +25,7 @@ export class Text extends createjs.Container {
 
     /**
      * Draws the text.
+     * @private
      */
     drawText() {
         // Create a new text object with the specified parameters

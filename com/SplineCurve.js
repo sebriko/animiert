@@ -86,7 +86,6 @@ export class SplineCurve extends createjs.Container {
             graphics.lineTo(lastPoint.x, lastPoint.y);
         }
 
-        // End the stroke
         graphics.endStroke();
     }
 
@@ -97,9 +96,6 @@ export class SplineCurve extends createjs.Container {
      */
     getY(x) {
         // Implement a method to find y for a given x-coordinate
-        // You may use interpolation methods or approximation techniques
-        // for finding y based on the x value
-        // This is a placeholder, replace it with your preferred implementation
         let previousPoint = null;
         let nextPoint = null;
         for (let i = 0; i < this.points.length - 1; i++) {

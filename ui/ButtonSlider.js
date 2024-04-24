@@ -53,6 +53,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Handles the mouse down event on the thumb.
      * @param {object} event The mouse down event object.
+     * @private
      */
     onThumbMouseDown(event) {
 		
@@ -63,6 +64,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Handles the press move event on the thumb.
      * @param {object} event The press move event object.
+     * @private
      */
     onThumbPressMove(event) {
 	
@@ -80,6 +82,7 @@ export class ButtonSlider extends createjs.Container {
 
     /**
      * Handles the mouse over event on the thumb.
+     * @private
      */
     onThumbMouseOver(event) {
         this.drawThumb("#228B22");
@@ -87,6 +90,7 @@ export class ButtonSlider extends createjs.Container {
 
     /**
      * Handles the mouse out event on the thumb.
+     * @private
      */
     onThumbMouseOut(event) {
         this.drawThumb("#999999");
@@ -95,6 +99,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Draws the thumb of the slider.
      * @param {string} strokeColor The color of the thumb stroke.
+     * @private
      */
     drawThumb(strokeColor) {
         if (this.orientation === "vertical") {
@@ -107,6 +112,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Draws the horizontal thumb of the slider.
      * @param {string} strokeColor The color of the thumb stroke.
+     * @private
      */
     drawThumbHorizontal(strokeColor) {
         const thumbWidth = this.height;
@@ -127,6 +133,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Draws the vertical thumb of the slider.
      * @param {string} strokeColor The color of the thumb stroke.
+     * @private
      */
     drawThumbVertical(strokeColor) {
         const thumbWidth = this.width;
@@ -147,6 +154,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Calculates the horizontal position of the thumb.
      * @returns {number} The horizontal position of the thumb.
+     * @private
      */
     getThumbPositionX() {
         return (this.value - this.minValue) / (this.maxValue - this.minValue) * this.size;
@@ -155,6 +163,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Calculates the vertical position of the thumb.
      * @returns {number} The vertical position of the thumb.
+     * @private
      */
     getThumbPositionY() {
         return (this.value - this.minValue) / (this.maxValue - this.minValue) * this.size;
@@ -163,6 +172,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Draws the background of the slider.
      * @param {string} fillColor The color of the background fill.
+     * @private
      */
     drawBackground(fillColor) {
         if (this.orientation === "vertical") {
@@ -175,6 +185,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Draws the horizontal background of the slider.
      * @param {string} fillColor The color of the background fill.
+     * @private
      */
     drawBackgroundHorizontal(fillColor) {
         this.background.graphics.clear().beginFill(fillColor).drawRect(0,0, this.size, 1).endFill();
@@ -183,6 +194,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Draws the vertical background of the slider.
      * @param {string} fillColor The color of the background fill.
+     * @private
      */
     drawBackgroundVertical(fillColor) {
         this.background.graphics.clear().beginFill(fillColor).drawRect(0,0, 1, this.size).endFill();
@@ -191,6 +203,7 @@ export class ButtonSlider extends createjs.Container {
     /**
      * Sets the value of the slider.
      * @param {number} value The value to set.
+     * @private
      */
     setValue(value) {
         this.value = Math.max(this.minValue, Math.min(value, this.maxValue));

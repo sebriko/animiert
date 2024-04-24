@@ -51,9 +51,7 @@ export class Checkbox extends createjs.Container {
         // Create the rectangle around the text (needed for hover effect)
         this.labelBackground = new createjs.Shape();
 		this.drawLabelBackground();
-		
-		
-		
+
         this.labelBackground.graphics.beginFill("#FFFFFF");
         this.labelBackground.graphics.drawRect(
             this.size + 5,
@@ -62,9 +60,6 @@ export class Checkbox extends createjs.Container {
             this.labelText.getBounds().height
         );
         this.labelBackground.graphics.endFill();
-		
-		
-		
 
         // Create the checkbox container and add elements
         this.container = new createjs.Container();
@@ -126,6 +121,7 @@ export class Checkbox extends createjs.Container {
     /**
      * Updates the label of the checkbox.
      * @param {string} label - The new label of the checkbox.
+     * @private
      */
     updateLabel(label) {
         this.label = label;

@@ -50,6 +50,7 @@ export class MathCurve extends createjs.Container {
 
     /**
      * Draws the curve based on the provided equation and parameters.
+     * @private
      */
     drawCurve() {
         this.curve.graphics.clear();
@@ -68,34 +69,6 @@ export class MathCurve extends createjs.Container {
 
         this.curve.graphics.endStroke();
         stage.update();
-    }
-
-    /**
-     * Sets the starting value of x and redraws the curve.
-     * @param {number} startX - The new starting value of x.
-     */
-    setStartX(startX) {
-        this.startX = startX;
-        this.drawCurve();
-    }
-
-    /**
-     * Sets the ending value of x and redraws the curve.
-     * @param {number} endX - The new ending value of x.
-     */
-    setEndX(endX) {
-        this.endX = endX;
-        this.drawCurve();
-    }
-
-    /**
-     * Sets the thickness of the curve and redraws it.
-     * @param {number} thickness - The new thickness of the curve.
-     */
-    setStrokeThickness(thickness) {
-        this.thickness = thickness;
-        this.curve.graphics.setStrokeStyle(this.thickness);
-        this.drawCurve();
     }
 
     /**
@@ -118,17 +91,14 @@ export class MathCurve extends createjs.Container {
 	
 	
 	/**
-	 * Gibt den y-Wert für einen gegebenen x-Wert basierend auf der mathematischen Gleichung der Kurve zurück.
-	 * @param {number} x - Der x-Wert, für den der y-Wert berechnet werden soll.
-	 * @returns {number} - Der berechnete y-Wert.
+	 * Returns the y-value for a given x-value based on the mathematical equation of the curve.
+	 * @param {number} x - The x-value for which the y-value is to be calculated.
+	 * @returns {number} - The calculated y-value.
 	 */
 	getValue(x) {
-		// Verwende die Gleichung der Kurve, um den y-Wert für den gegebenen x-Wert zu berechnen.
 		const y = this.equation(x);
 		return y;
 	}
-		
-	
 
     /**
      * Draws guidelines at a specified x-coordinate on the curve.

@@ -48,6 +48,7 @@ export class ProgressSlider extends createjs.Container {
     /**
      * Draws the background of the slider.
      * @param {string} fillColor The color of the background fill.
+     * @private
      */
     drawBackground(fillColor) {
         this.background.graphics.clear();
@@ -66,6 +67,7 @@ export class ProgressSlider extends createjs.Container {
     /**
      * Draws the thumb of the slider.
      * @param {number} state The state of the thumb (0 for normal, 1 for hover).
+     * @private
      */
     drawThumb(state) {
         this.thumb.graphics.clear();
@@ -124,6 +126,7 @@ export class ProgressSlider extends createjs.Container {
     /**
      * Calculates the horizontal position of the thumb.
      * @returns {number} The horizontal position of the thumb.
+     * @private
      */
     getThumbPositionX() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
@@ -133,6 +136,7 @@ export class ProgressSlider extends createjs.Container {
     /**
      * Calculates the vertical position of the thumb.
      * @returns {number} The vertical position of the thumb.
+     * @private
      */
     getThumbPositionY() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
@@ -141,6 +145,7 @@ export class ProgressSlider extends createjs.Container {
 
     /**
      * Handles the mouse over event on the thumb.
+     * @private
      */
     handleThumbMouseOver(event) {
         this.drawThumb(1);
@@ -148,6 +153,7 @@ export class ProgressSlider extends createjs.Container {
 
     /**
      * Handles the mouse out event on the thumb.
+     * @private
      */
     handleThumbMouseOut(event) {
         this.drawThumb(0);
@@ -156,6 +162,7 @@ export class ProgressSlider extends createjs.Container {
     /**
      * Handles the mouse down event on the thumb.
      * @param {object} event The mouse down event object.
+     * @private
      */
     handleThumbMouseDown(event) {
         const point = this.container.globalToLocal(event.stageX, event.stageY);
@@ -165,6 +172,7 @@ export class ProgressSlider extends createjs.Container {
     /**
      * Handles the press move event on the thumb.
      * @param {object} event The press move event object.
+     * @private
      */
     handleThumbPressMove(event) {
         const point = this.container.globalToLocal(event.stageX, event.stageY);

@@ -15,9 +15,8 @@ export class BezierCurve extends createjs.Container {
      * @param {number} [thickness=2] - The thickness of the curve.
      */
     constructor(startX, startY, controlX, controlY, endX, endY, color = 'black', thickness = 2) {
-        // Rufe den Constructor der übergeordneten Klasse auf
+
         super();
-        // Speichere die Attribute der Bezierkurve
         this.startX = startX;
         this.startY = startY;
         this.controlX = controlX;
@@ -27,33 +26,28 @@ export class BezierCurve extends createjs.Container {
         this.color = color;
         this.thickness = thickness;
 
-        // Erstelle eine createjs.Shape-Instanz zum Zeichnen der Kurve
         this.curveShape = new createjs.Shape();
         
-        // Füge die Shape-Instanz zu diesem Container hinzu
         this.addChild(this.curveShape);
 
-        // Zeichne die Bezierkurve
         this.drawCurve();
-        stage.addChild(this); // Füge den Container zur Bühne hinzu
+        stage.addChild(this); 
     }
 
     /**
      * Draws the Bezier curve.
+	 * @private
      */
     drawCurve() {
         const graphics = this.curveShape.graphics;
         graphics.clear();
 
-        // Setze Farbe und Dicke der Kurve
         graphics.beginStroke(this.color);
         graphics.setStrokeStyle(this.thickness);
 
-        // Zeichne die Bezierkurve mit den angegebenen Punkten
         graphics.moveTo(this.startX, this.startY);
         graphics.quadraticCurveTo(this.controlX, this.controlY, this.endX, this.endY);
 
-        // Beende den Strich
         graphics.endStroke();
     }
 
@@ -78,15 +72,14 @@ export class BezierCurve extends createjs.Container {
      * Calculates the parameter t for the given x-coordinate.
      * @param {number} x - The x-coordinate.
      * @returns {number} - The parameter t corresponding to the given x-coordinate.
+	 * @private
      */
     calculateT(x) {
-        // Berechne die Gesamtlänge der Kurve in X-Richtung
+ 
         const totalLength = this.endX - this.startX;
 
-        // Berechne die relative Position von x in Bezug auf die Gesamtlänge
         const position = x - this.startX;
 
-        // Berechne t basierend auf der linearen Beziehung zwischen x und t
         return position / totalLength;
     }
 
@@ -94,32 +87,25 @@ export class BezierCurve extends createjs.Container {
      * Displays the control points and lines connecting them to the curve's endpoints.
      */
     showControls() {
-        // Erstelle eine neue createjs.Shape-Instanz für die Hilfslinien
+
         const controlLineShape = new createjs.Shape();
-        
-        // Setze die Farbe und Dicke der Linien
+
         controlLineShape.graphics.beginStroke('gray');
         controlLineShape.graphics.setStrokeStyle(1);
         
-        // Zeichne die Hilfslinien von den Steuerpunkten zu den Endpunkten
         controlLineShape.graphics.moveTo(this.startX, this.startY);
         controlLineShape.graphics.lineTo(this.controlX, this.controlY);
         controlLineShape.graphics.lineTo(this.endX, this.endY);
-        
-        // Beende den Strich
+
         controlLineShape.graphics.endStroke();
-        
-        // Füge die Shape-Instanz zu diesem Container hinzu
+
         this.addChild(controlLineShape);
-        
-        // Optionale: Wenn du die Steuerpunkte selbst anzeigen möchtest, kannst du Kreise zeichnen
-        // Erstelle einen kleinen Kreis für den Steuerpunkt
+
         const controlPointShape = new createjs.Shape();
         controlPointShape.graphics.beginFill('gray');
         controlPointShape.graphics.drawCircle(this.controlX, this.controlY, 4);
         controlPointShape.graphics.endFill();
         
-        // Füge den Kreis zu diesem Container hinzu
         this.addChild(controlPointShape);
     }
 }
