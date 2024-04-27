@@ -1,12 +1,4 @@
 export class EditText extends createjs.Container {
-    /**
-     * Creates a new instance of the `EditText` class.
-     *
-     * @param {string} text - The initial text to be displayed in the text field.
-     * @param {string} styles - The styles to be applied to the text (e.g., font size, font family).
-     * @param {string} color - The color of the text.
-     * @param {number} maxLength - The maximum number of characters that can be entered.
-     */
     constructor(text, styles, color, maxLength = Infinity) {
         super();
 
@@ -14,37 +6,58 @@ export class EditText extends createjs.Container {
         this.color = color;
         this.styles = styles;
         this.maxLength = maxLength;
-        this.cursorIndex = text.length; // Initialize cursor index to the end of the text
-
+        this.cursorIndex = text.length;
+        this.shiftPressed = false;
+        this.selectionStart = -1;
+        this.selectionEnd = -1;
         this.drawText();
         this.drawCursor();
 
+        // Hinzufügen des Auswahlrechtecks
+        this.selectionRect = new createjs.Shape();
+        this.addChild(this.selectionRect);
         stage.addChild(this);
 
-        let self = this;
+        const self = this;
 
-        // Event listener for keydown events to handle text input and cursor movement
+        // Event-Listener für Tastatureingaben
         document.addEventListener("keydown", function(event) {
-            // Handle arrow keys for cursor movement
-            if (event.keyCode === 37) { // Left arrow key
+            self.shiftPressed = event.shiftKey;
+
+            if (event.keyCode === 37) { // Linke Pfeiltaste
                 if (self.cursorIndex > 0) {
                     self.cursorIndex--;
                 }
-            } else if (event.keyCode === 39) { // Right arrow key
+
+                if (self.shiftPressed) {
+                    self.selectionEnd = self.cursorIndex;
+                    if (self.selectionStart === -1) {
+                        self.selectionStart = self.selectionEnd + 1;
+                    }
+                }
+            } else if (event.keyCode === 39) { // Rechte Pfeiltaste
                 if (self.cursorIndex < self.textObj.text.length) {
                     self.cursorIndex++;
                 }
-            } else if ((event.keyCode >= 48 && event.keyCode <= 57) || // Numbers (0-9)
-                event.keyCode === 190 || event.keyCode === 188 || // Period (.) and comma (,)
-                event.keyCode === 8) { // Backspace
-                // Handle backspace key
+
+                if (self.shiftPressed) {
+                    self.selectionEnd = self.cursorIndex;
+                    if (self.selectionStart === -1) {
+                        self.selectionStart = self.selectionEnd - 1;
+                    }
+                }
+            }
+
+            // Verarbeiten von Tastatureingaben
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || // Zahlen (0-9)
+                event.keyCode === 190 || event.keyCode === 188 || // Punkt und Komma
+                event.keyCode === 8) { // Rücktaste
                 if (event.keyCode === 8) {
                     if (self.cursorIndex > 0) {
                         self.textObj.text = self.textObj.text.slice(0, self.cursorIndex - 1) + self.textObj.text.slice(self.cursorIndex);
                         self.cursorIndex--;
                     }
                 } else {
-                    // Handle adding other keys if within max length
                     if (self.textObj.text.length < self.maxLength) {
                         self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + event.key + self.textObj.text.slice(self.cursorIndex);
                         self.cursorIndex++;
@@ -52,15 +65,26 @@ export class EditText extends createjs.Container {
                 }
             }
 
-            // Update the cursor position after handling the key event
-            self.updateCursor();
+            
 
+            if (!self.shiftPressed) {
+                self.selectionStart = -1;
+                self.selectionEnd = -1;
+                self.selectionRect.graphics.clear();
+				self.drawCursor();
+				self.updateCursor();
+            } else {
+				self.updateSelectionRect();
+			}
+
+            // Aktualisierung der Cursorposition
+            
             stage.update();
         });
     }
 
     /**
-     * Draws the initial text with the specified parameters.
+     * Zeichnet den initialen Text mit den angegebenen Parametern.
      */
     drawText() {
         this.textObj = new createjs.Text(this.textValue, this.styles, this.color);
@@ -70,9 +94,11 @@ export class EditText extends createjs.Container {
     }
 
     /**
-     * Draws the cursor as a vertical rectangle.
+     * Zeichnet den Cursor als vertikales Rechteck.
      */
     drawCursor() {
+		this.removeAllChildren();
+		this.addChild(this.textObj);
         this.cursorObj = new createjs.Shape();
         this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
         this.updateCursor();
@@ -80,14 +106,56 @@ export class EditText extends createjs.Container {
     }
 
     /**
-     * Updates the cursor position based on the current cursor index.
+     * Aktualisiert die Cursorposition basierend auf dem aktuellen Cursorindex.
      */
     updateCursor() {
-        // Calculate the width of the text up to the current cursor index
         const cursorPositionText = this.textObj.text.slice(0, this.cursorIndex);
         const cursorWidth = new createjs.Text(cursorPositionText, this.styles, this.color).getMeasuredWidth();
-
-        // Set the cursor's x position based on the calculated width
         this.cursorObj.x = cursorWidth;
+    }
+
+    /**
+     * Aktualisiert das Auswahlrechteck.
+     */
+updateSelectionRect() {
+    // Entfernen Sie den vorherigen weißen Text und Rechtecke, um doppelte Zeichnungen zu vermeiden
+    this.removeAllChildren();
+    this.addChild(this.textObj);
+    this.addChild(this.selectionRect);
+
+    // Überprüfen Sie, ob eine gültige Markierung vorliegt
+    if (this.selectionStart !== -1 && this.selectionEnd !== -1 && this.selectionStart !== this.selectionEnd) {
+        // Bestimmen Sie die Start- und Endpositionen der Markierung
+        const start = Math.min(this.selectionStart, this.selectionEnd);
+        const end = Math.max(this.selectionStart, this.selectionEnd);
+
+        const startX = this.getWidthUpToIndex(start);
+        const endX = this.getWidthUpToIndex(end);
+        const rectWidth = endX - startX;
+
+        // Zeichnen Sie das blaue Rechteck mit einer Füllfarbe
+        this.selectionRect.graphics.clear();
+        this.selectionRect.graphics.beginFill("#0000FF"); // Blaue Füllfarbe
+        this.selectionRect.graphics.drawRect(startX, 0, rectWidth, this.textObj.getMeasuredHeight());
+
+        // Setzen Sie den markierten Text in Weiß
+        const selectedText = this.textObj.text.slice(start, end);
+        const whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF"); // Weißer Text
+        whiteText.x = startX;
+        whiteText.y = 0;
+
+        // Fügen Sie den weißen Text dem Container hinzu
+        this.addChild(whiteText);
+    }
+}
+
+
+    /**
+     * Gibt die Breite des Texts bis zu einem bestimmten Index zurück.
+     */
+    getWidthUpToIndex(index) {
+        const textUpToIndex = this.textObj.text.slice(0, index);
+        const tempText = new createjs.Text(textUpToIndex, this.styles, this.color);
+        return tempText.getMeasuredWidth();
     }
 }
