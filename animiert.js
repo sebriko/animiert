@@ -1,6 +1,6 @@
 import { Arrow } from './com/Arrow.js';
 import { Text } from './text/Text.js'; 
-import { EditText } from './text/EditText.js'; 
+import { TextInput } from './ui/TextInput.js'; 
 import { MathCurve } from './math/MathCurve.js';
 import { CoordinateSystem } from './math/CoordinateSystem.js';
 import { ButtonSlider } from './ui/ButtonSlider.js';
@@ -14,4 +14,4 @@ import { SplineCurve } from './com/SplineCurve.js';
 
 
 console.log("sefd")
-export const animiert = { Arrow, Text, EditText, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line, BezierCurve, SplineCurve };
+export const animiert = { Arrow, Text, TextInput, MathCurve, CoordinateSystem, ButtonSlider, ProgressSlider, Checkbox, RadioButton, Line, BezierCurve, SplineCurve };
