@@ -1,10 +1,12 @@
 export class TextInput extends createjs.Container {
-    constructor(text, styles, color, maxLength = Infinity) {
+    constructor(text, styles, color, width, maxLength = Infinity) {
         super();
 
         this.textValue = text;
         this.color = color;
+		this.width = width;
         this.styles = styles;
+		this.padding = 9;
         this.maxLength = maxLength;
         this.cursorIndex = text.length;
         this.shiftPressed = false;
@@ -162,12 +164,12 @@ drawBackgroundAndBorder() {
     this.backgroundRect = new createjs.Shape();
 
     // Definiert die maximale Breite basierend auf der maxLength-Eigenschaft
-    const maxWidth = this.getWidthUpToIndex(this.maxLength);
+    //const maxWidth = this.getWidthUpToIndex(this.maxLength);
 
     // Zeichnet den dunkelgrauen dünnen Rahmen
     this.backgroundRect.graphics.setStrokeStyle(1);
     this.backgroundRect.graphics.beginStroke("#A9A9A9"); // Dunkelgraue Farbe
-    this.backgroundRect.graphics.drawRect(0, 0, maxWidth, this.textObj.getMeasuredHeight());
+    this.backgroundRect.graphics.drawRect(0, -this.padding/2, this.width, this.textObj.getMeasuredHeight()+this.padding);
 
     // Fügt die Shape-Instanz zum Container hinzu
     this.addChild(this.backgroundRect);
