@@ -53,21 +53,24 @@ this.drawBackgroundAndBorder();
             }
 
             // Verarbeiten von Tastatureingaben
-            if ((event.keyCode >= 48 && event.keyCode <= 57) || // Zahlen (0-9)
-                event.keyCode === 190 || event.keyCode === 188 || // Punkt und Komma
-                event.keyCode === 8) { // Rücktaste
-                if (event.keyCode === 8) {
-                    if (self.cursorIndex > 0) {
-                        self.textObj.text = self.textObj.text.slice(0, self.cursorIndex - 1) + self.textObj.text.slice(self.cursorIndex);
-                        self.cursorIndex--;
-                    }
-                } else {
-                    if (self.textObj.text.length < self.maxLength) {
-                        self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + event.key + self.textObj.text.slice(self.cursorIndex);
-                        self.cursorIndex++;
-                    }
-                }
-            }
+// Verarbeiten von Tastatureingaben
+if ((event.keyCode >= 48 && event.keyCode <= 57) || // Zahlen (0-9)
+    event.keyCode === 190 || event.keyCode === 188 || // Punkt und Komma
+    event.keyCode === 8) { // Rücktaste
+    if (event.keyCode === 8) {
+        if (self.cursorIndex > 0) {
+            self.textObj.text = self.textObj.text.slice(0, self.cursorIndex - 1) + self.textObj.text.slice(self.cursorIndex);
+            self.cursorIndex--;
+        }
+    } else {
+        // Überprüfen, ob der Text die Breite überschreitet
+        const tempTextWidth = self.getWidthUpToIndex(self.cursorIndex + 1);
+        if (tempTextWidth <= self.width && self.textObj.text.length < self.maxLength) {
+            self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + event.key + self.textObj.text.slice(self.cursorIndex);
+            self.cursorIndex++;
+        }
+    }
+}
 
             
 
@@ -169,7 +172,7 @@ drawBackgroundAndBorder() {
     // Zeichnet den dunkelgrauen dünnen Rahmen
     this.backgroundRect.graphics.setStrokeStyle(1);
     this.backgroundRect.graphics.beginStroke("#A9A9A9"); // Dunkelgraue Farbe
-    this.backgroundRect.graphics.drawRect(0, -this.padding/2, this.width, this.textObj.getMeasuredHeight()+this.padding);
+    this.backgroundRect.graphics.drawRect(-this.padding/2, -this.padding/2, this.width, this.textObj.getMeasuredHeight()+this.padding);
 
     // Fügt die Shape-Instanz zum Container hinzu
     this.addChild(this.backgroundRect);
