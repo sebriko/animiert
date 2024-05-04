@@ -48,6 +48,8 @@ export class ButtonSlider extends createjs.Container {
 		this.addChild(this.container);
 		stage.addChild(this);
 		stage.enableMouseOver();
+		
+		stage.update();
     }
 
     /**
@@ -213,6 +215,7 @@ export class ButtonSlider extends createjs.Container {
             this.thumb.y = this.getThumbPositionY();
         }
 		 this.dispatchChangeEvent();
+		 stage.update();
     }
 	
 	dispatchChangeEvent() {
