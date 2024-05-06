@@ -130,6 +130,8 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.setBounds(0, 0, thumbWidth, thumbHeight);
         this.thumb.x = this.getThumbPositionX();
         this.thumb.y = 0;
+		
+		stage.update();
     }
 
     /**
@@ -151,6 +153,8 @@ export class ButtonSlider extends createjs.Container {
         this.thumb.setBounds(0, 0, thumbWidth, thumbHeight);
         this.thumb.x = 0;
         this.thumb.y = this.getThumbPositionY();
+		
+		stage.update();
     }
 
     /**
