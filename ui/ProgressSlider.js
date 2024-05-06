@@ -108,6 +108,8 @@ export class ProgressSlider extends createjs.Container {
         this.thumb.setBounds(0, 0, triangleSize, triangleSize);
         this.thumb.x = (this.orientation === "horizontal") ? this.getThumbPositionX() : 0;
         this.thumb.y = (this.orientation === "vertical") ? this.getThumbPositionY() : 0;
+		
+		stage.update();
     }
 
     /**
@@ -191,6 +193,6 @@ export class ProgressSlider extends createjs.Container {
         }
 
         currentAngle = percentage * 720;
-        drawDynamicElements(currentAngle); // Assuming this function exists elsewhere
+        stage.update();
     }
 }
