@@ -72,6 +72,7 @@ export class Checkbox extends createjs.Container {
             this.background.graphics.beginFill("#FFFFFF");
             this.background.graphics.drawRect(0, 0, this.size, this.size);
             this.background.graphics.endFill();
+			stage.update();
         });
 
         this.container.addEventListener("mouseout", () => {
@@ -80,6 +81,7 @@ export class Checkbox extends createjs.Container {
             this.background.graphics.beginFill("#FFFFFF");
             this.background.graphics.drawRect(0, 0, this.size, this.size);
             this.background.graphics.endFill();
+			stage.update();
         });
 
         // Update checkbox state
@@ -116,6 +118,7 @@ export class Checkbox extends createjs.Container {
      */
     updateCheckbox() {
         this.checkmark.visible = this.checked;
+		stage.update();
     }
 
     /**
