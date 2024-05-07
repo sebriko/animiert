@@ -26,7 +26,7 @@ export class ProgressSlider extends createjs.Container {
         this.orientation = orientation || "horizontal";
 
         this.background = new createjs.Shape();
-        this.drawBackground("#CCCCCC");
+        this.drawBackground("#555555");
 
         this.thumb = new createjs.Shape();
         this.drawThumb(0);
