@@ -254,25 +254,37 @@ this.decreaseButton.y = decreaseButtonY;
         });
     }
 
-    // Methode, um den Wert zu erhöhen
-    increaseValue() {
-        let currentValue = parseFloat(this.textObj.text);
-        if (!isNaN(currentValue)) {
-            currentValue += this.stepValue; // Erhöhe um stepValue
-            this.textObj.text = currentValue.toFixed(2);
-            this.updateCursor();
-        }
+// Methode, um den Wert zu erhöhen
+increaseValue() {
+    let currentValue = parseFloat(this.textObj.text);
+    if (!isNaN(currentValue)) {
+        const decimalPlaces = this.getDecimalPlaces(this.textObj.text);
+        currentValue += this.stepValue;
+        this.textObj.text = currentValue.toFixed(decimalPlaces);
+        this.updateCursor();
     }
+}
 
-    // Methode, um den Wert zu verringern
-    decreaseValue() {
-        let currentValue = parseFloat(this.textObj.text);
-        if (!isNaN(currentValue)) {
-            currentValue -= this.stepValue; // Verringere um stepValue
-            this.textObj.text = currentValue.toFixed(2);
-            this.updateCursor();
-        }
+// Methode, um den Wert zu verringern
+decreaseValue() {
+    let currentValue = parseFloat(this.textObj.text);
+    if (!isNaN(currentValue)) {
+        const decimalPlaces = this.getDecimalPlaces(this.textObj.text);
+        currentValue -= this.stepValue;
+        this.textObj.text = currentValue.toFixed(decimalPlaces);
+        this.updateCursor();
     }
+}
+
+// Methode, um die Anzahl der Dezimalstellen einer Eingabezahl zu ermitteln
+getDecimalPlaces(numericString) {
+    const pointIndex = numericString.indexOf('.');
+    if (pointIndex === -1) {
+        return 0;
+    } else {
+        return numericString.length - pointIndex - 1;
+    }
+}
 
     /**
      * Gibt die Breite des Texts bis zu einem bestimmten Index zurück.
