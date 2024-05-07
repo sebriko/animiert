@@ -12,32 +12,84 @@ export class Text extends createjs.Container {
      */
     constructor(text, styles, color, align) {
         super();
-        
+
         this.text = text;
         this.color = color;
         this.styles = styles;
-		
-		this.align = align || "left"; // Default alignment is left
+        this.align = align || 'left';
 
         this.drawText();
         stage.addChild(this);
     }
 
     /**
-     * Draws the text.
+     * Parses the input text and creates text elements with proper subscript and superscript formatting.
      * @private
      */
     drawText() {
-        // Create a new text object with the specified parameters
-        let textObj = new createjs.Text(this.text, this.styles, this.color);
+        // Regex zum Parsen von hoch- und tiefgestellten Text
+        const parts = this.text.split(/([_^])/);
 
-        // Set the position of the text object
-        textObj.x = 0;
-        textObj.y = 0;
-		
-		textObj.textAlign = this.align;
+        // Aktuelle x-Position zum Platzieren der Textobjekte nebeneinander
+        let currentX = 0;
 
-        // Add the text object to the container class
-        this.addChild(textObj);
+        // Flags für hoch- und tiefgestellte Modi
+        let subscriptMode = false;
+        let superscriptMode = false;
+
+        // Durchlaufe die Teile
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+
+            // Überprüfe auf Unterstrich (tiefgestellt) oder Caret (hochgestellt)
+            if (part === '_') {
+                subscriptMode = !subscriptMode;
+                superscriptMode = false;
+                continue;
+            }
+            if (part === '^') {
+                superscriptMode = !superscriptMode;
+                subscriptMode = false;
+                continue;
+            }
+
+            // Passe die Schriftgröße an
+            let currentStyles = this.styles;
+            if (subscriptMode || superscriptMode) {
+                // Extrahiere die Schriftgröße aus den Stilen und reduziere sie um zwei Schriftgrade
+                const styleComponents = currentStyles.split(' ');
+                let fontSizeIndex = styleComponents.findIndex(component => component.endsWith('px'));
+                if (fontSizeIndex > -1) {
+                    let fontSize = parseInt(styleComponents[fontSizeIndex]);
+                    fontSize -= 2;
+                    styleComponents[fontSizeIndex] = `${fontSize}px`;
+                    currentStyles = styleComponents.join(' ');
+                }
+            }
+
+            // Erstelle ein neues Textobjekt mit den angegebenen Parametern
+            const textObj = new createjs.Text(part, currentStyles, this.color);
+
+            // Setze den Textausrichtungswert
+            textObj.textAlign = this.align;
+
+            // Setze die Position des Textobjekts
+            textObj.x = currentX;
+
+            // Passe die y-Position an, abhängig davon, ob subscript oder superscript Modus aktiviert ist
+            if (subscriptMode) {
+                textObj.y = 7; // Anpassen des y-Werts für tiefgestellten Text
+            } else if (superscriptMode) {
+                textObj.y = -7; // Anpassen des y-Werts für hochgestellten Text
+            } else {
+                textObj.y = 0; // Standard y-Wert für normalen Text
+            }
+
+            // Füge das Textobjekt zur Containerklasse hinzu
+            this.addChild(textObj);
+
+            // Aktualisiere die aktuelle x-Position für das nächste Textobjekt
+            currentX += textObj.getMeasuredWidth();
+        }
     }
 }
