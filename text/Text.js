@@ -18,9 +18,14 @@ export class Text extends createjs.Container {
         this.styles = styles;
         this.align = align || 'left';
 
+
         this.drawText();
         stage.addChild(this);
     }
+	
+	getMeasuredHeight() {	
+		return this.textObj.getMeasuredHeight();
+	}
 
     /**
      * Parses the input text and creates text elements with proper subscript and superscript formatting.
@@ -68,28 +73,31 @@ export class Text extends createjs.Container {
             }
 
             // Erstelle ein neues Textobjekt mit den angegebenen Parametern
-            const textObj = new createjs.Text(part, currentStyles, this.color);
+            this.textObj = new createjs.Text(part, currentStyles, this.color);
+			
+			this.textObj.textAlign = "left";
+			this.textObj.textBaseline = "middle";
 
             // Setze den Textausrichtungswert
-            textObj.textAlign = this.align;
+            this.textObj.textAlign = this.align;
 
             // Setze die Position des Textobjekts
-            textObj.x = currentX;
+            this.textObj.x = currentX;
 
             // Passe die y-Position an, abhängig davon, ob subscript oder superscript Modus aktiviert ist
             if (subscriptMode) {
-                textObj.y = 7; // Anpassen des y-Werts für tiefgestellten Text
+                this.textObj.y = 7; // Anpassen des y-Werts für tiefgestellten Text
             } else if (superscriptMode) {
-                textObj.y = -7; // Anpassen des y-Werts für hochgestellten Text
+                this.textObj.y = -7; // Anpassen des y-Werts für hochgestellten Text
             } else {
-                textObj.y = 0; // Standard y-Wert für normalen Text
+                this.textObj.y = 0; // Standard y-Wert für normalen Text
             }
 
             // Füge das Textobjekt zur Containerklasse hinzu
-            this.addChild(textObj);
+            this.addChild(this.textObj);
 
             // Aktualisiere die aktuelle x-Position für das nächste Textobjekt
-            currentX += textObj.getMeasuredWidth();
+            currentX += this.textObj.getMeasuredWidth();
         }
     }
 }

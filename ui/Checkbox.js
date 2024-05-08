@@ -1,3 +1,5 @@
+import { Text } from '../text/Text.js';
+
 /**
  * Creates a Checkbox
  
@@ -42,9 +44,7 @@ export class Checkbox extends createjs.Container {
         this.drawCheckmark();
 
         // Create the label of the checkbox as a Text object
-        this.labelText = new createjs.Text(this.label, this.fontSize + "px " + this.font, "#000000");
-        this.labelText.textAlign = "left";
-        this.labelText.textBaseline = "middle";
+        this.labelText = new Text(this.label, this.fontSize + "px " + this.font, "#000000");
         this.labelText.x = this.size + 5;
         this.labelText.y = this.size / 2;
 
