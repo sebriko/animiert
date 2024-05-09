@@ -3,12 +3,18 @@ export class NumericStepper extends createjs.Container {
         super();
 
         this.numericValue = numericValue;
+		
+		
         this.color = color;
 		this.width = width;
         this.styles = styles;
 		this.padding = 9;
         this.maxLength = maxLength;
         this.cursorIndex = numericValue.length;
+		
+		
+		this.decimalPlaces = this.getDecimalPlaces(numericValue);
+		
         this.shiftPressed = false;
         this.selectionStart = -1;
         this.selectionEnd = -1;
@@ -258,9 +264,8 @@ this.decreaseButton.y = decreaseButtonY;
 increaseValue() {
     let currentValue = parseFloat(this.textObj.text);
     if (!isNaN(currentValue)) {
-        const decimalPlaces = this.getDecimalPlaces(this.textObj.text);
         currentValue += this.stepValue;
-        this.textObj.text = currentValue.toFixed(decimalPlaces);
+        this.textObj.text = currentValue.toFixed(this.decimalPlaces);
         this.updateCursor();
     }
 }
@@ -269,9 +274,8 @@ increaseValue() {
 decreaseValue() {
     let currentValue = parseFloat(this.textObj.text);
     if (!isNaN(currentValue)) {
-        const decimalPlaces = this.getDecimalPlaces(this.textObj.text);
         currentValue -= this.stepValue;
-        this.textObj.text = currentValue.toFixed(decimalPlaces);
+        this.textObj.text = currentValue.toFixed(this.decimalPlaces);
         this.updateCursor();
     }
 }
