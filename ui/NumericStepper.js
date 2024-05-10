@@ -138,7 +138,7 @@ export class NumericStepper extends createjs.Container {
      * Aktualisiert die Cursorposition basierend auf dem aktuellen Cursorindex.
      */
     updateCursor() {
-        const cursorPositionText = this.textObj.text.slice(0, self.cursorIndex);
+        const cursorPositionText = this.textObj.text.slice(0, this.cursorIndex);
         const cursorWidth = new createjs.Text(cursorPositionText, this.styles, this.color).getMeasuredWidth();
         this.cursorObj.x = cursorWidth;
     }
