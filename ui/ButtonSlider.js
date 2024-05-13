@@ -58,7 +58,6 @@ export class ButtonSlider extends createjs.Container {
      * @private
      */
     onThumbMouseDown(event) {
-		
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         this.offset = { x: this.thumb.x - point.x, y: this.thumb.y - point.y };
     }
@@ -69,7 +68,6 @@ export class ButtonSlider extends createjs.Container {
      * @private
      */
     onThumbPressMove(event) {
-	
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         let newX, newY;
         
@@ -78,7 +76,7 @@ export class ButtonSlider extends createjs.Container {
             this.setValue(this.minValue + (newX / this.size) * (this.maxValue - this.minValue));
         } else if (this.orientation === "vertical") {
             newY = Math.max(0, Math.min(point.y + this.offset.y, this.size));
-            this.setValue(this.minValue + (newY / this.size) * (this.maxValue - this.minValue));
+            this.setValue(this.maxValue - (newY / this.size) * (this.maxValue - this.minValue));
         }
     }
 
@@ -172,7 +170,7 @@ export class ButtonSlider extends createjs.Container {
      * @private
      */
     getThumbPositionY() {
-        return (this.value - this.minValue) / (this.maxValue - this.minValue) * this.size;
+        return (this.maxValue - this.value) / (this.maxValue - this.minValue) * this.size;
     }
 
     /**
