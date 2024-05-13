@@ -102,6 +102,7 @@ export class NumericStepper extends createjs.Container {
 
             // Aktualisierung der Stage
             stage.update();
+			self.dispatchChangeEvent();
         });
     }
 
@@ -267,6 +268,7 @@ increaseValue() {
         currentValue += this.stepValue;
         this.textObj.text = currentValue.toFixed(this.decimalPlaces);
         this.updateCursor();
+		this.dispatchChangeEvent();
     }
 }
 
@@ -277,6 +279,7 @@ decreaseValue() {
         currentValue -= this.stepValue;
         this.textObj.text = currentValue.toFixed(this.decimalPlaces);
         this.updateCursor();
+		this.dispatchChangeEvent();
     }
 }
 
@@ -298,4 +301,8 @@ getDecimalPlaces(numericString) {
         const tempText = new createjs.Text(textUpToIndex, this.styles, this.color);
         return tempText.getMeasuredWidth();
     }
+	
+		dispatchChangeEvent() {
+    this.dispatchEvent("change");
+}
 }
