@@ -165,6 +165,7 @@ export class NumericStepper extends createjs.Container {
 		this.addChild(this.increaseButton);
         this.addChild(this.decreaseButton);
 		
+		this.selectionRect.graphics.clear();
         // Überprüfen Sie, ob eine gültige Markierung vorliegt
         if (this.selectionStart !== -1 && this.selectionEnd !== -1 && this.selectionStart !== this.selectionEnd) {
             // Bestimmen Sie die Start- und Endpositionen der Markierung
@@ -176,9 +177,10 @@ export class NumericStepper extends createjs.Container {
             const rectWidth = endX - startX;
 
             // Zeichnen Sie das blaue Rechteck mit einer Füllfarbe
-            this.selectionRect.graphics.clear();
+            
             this.selectionRect.graphics.beginFill("#0000FF"); // Blaue Füllfarbe
             this.selectionRect.graphics.drawRect(startX, 0, rectWidth, this.textObj.getMeasuredHeight());
+			
 
             // Setzen Sie den markierten Text in Weiß
             const selectedText = this.textObj.text.slice(start, end);
