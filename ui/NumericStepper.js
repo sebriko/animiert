@@ -10,10 +10,10 @@ export class NumericStepper extends createjs.Container {
         this.styles = styles;
 		this.padding = 9;
         this.maxLength = maxLength;
-        this.cursorIndex = numericValue.length;
+        this.cursorIndex = String(numericValue).length;
 		
 		
-		this.decimalPlaces = this.getDecimalPlaces(numericValue);
+		this.decimalPlaces = 0;
 		
         this.shiftPressed = false;
         this.selectionStart = -1;
@@ -108,7 +108,7 @@ export class NumericStepper extends createjs.Container {
 			
 			    if (event.keyCode === 13) {
        self.dispatchChangeEvent();
-	   this.numericValue = self.textObj.text;
+	   this.numericValue = parseFloat(self.textObj.text);
     }
 			
 			
@@ -119,7 +119,7 @@ export class NumericStepper extends createjs.Container {
      * Zeichnet den initialen Text mit den angegebenen Parametern.
      */
     drawText() {
-        this.textObj = new createjs.Text(this.numericValue, this.styles, this.color);
+        this.textObj = new createjs.Text(String(this.numericValue), this.styles, this.color);
         this.textObj.x = 0;
         this.textObj.y = 0;
         this.addChild(this.textObj);
@@ -279,7 +279,7 @@ increaseValue() {
         currentValue += this.stepValue;
         this.textObj.text = currentValue.toFixed(this.decimalPlaces);
         this.updateCursor();
-		this.numericValue = this.textObj.text;
+		this.numericValue = currentValue;
 		this.dispatchChangeEvent();
     }
 }
@@ -291,20 +291,11 @@ decreaseValue() {
         currentValue -= this.stepValue;
         this.textObj.text = currentValue.toFixed(this.decimalPlaces);
         this.updateCursor();
-		this.numericValue = this.textObj.text;
+		this.numericValue = currentValue;
 		this.dispatchChangeEvent();
     }
 }
 
-// Methode, um die Anzahl der Dezimalstellen einer Eingabezahl zu ermitteln
-getDecimalPlaces(numericString) {
-    const pointIndex = numericString.indexOf('.');
-    if (pointIndex === -1) {
-        return 0;
-    } else {
-        return numericString.length - pointIndex - 1;
-    }
-}
 
     /**
      * Gibt die Breite des Texts bis zu einem bestimmten Index zurück.
