@@ -107,8 +107,10 @@ export class NumericStepper extends createjs.Container {
 			
 			
 			    if (event.keyCode === 13) {
-       self.dispatchChangeEvent();
-	   this.numericValue = parseFloat(self.textObj.text);
+     
+		self.numericValue = parseFloat(self.textObj.text);
+	    self.dispatchChangeEvent();
+		
     }
 			
 			
