@@ -3,41 +3,40 @@ export class NumericStepper extends createjs.Container {
         super();
 
         this.numericValue = numericValue;
-		
-		
         this.color = color;
-		this.width = width;
+        this.width = width;
         this.styles = styles;
-		this.padding = 9;
+        this.padding = 9;
         this.maxLength = maxLength;
         this.cursorIndex = String(numericValue).length;
-		
-		
-		this.decimalPlaces = 0;
-		
+        this.decimalPlaces = 0;
         this.shiftPressed = false;
         this.selectionStart = -1;
         this.selectionEnd = -1;
-        this.stepValue = stepValue;  // Speichert den Schrittwert
+        this.stepValue = stepValue;
 
-        this.drawText();
-        this.drawCursor();
+        this.textObj = new createjs.Text("", this.styles, this.color);
+        const textHeight = this.textObj.getMeasuredHeight();
+        
 		this.drawBackgroundAndBorder();
-		
-        // Hinzufügen des Auswahlrechtecks
+		this.drawText();
+		this.drawCursor();
+        
+
         this.selectionRect = new createjs.Shape();
         this.addChild(this.selectionRect);
-		
+
         this.increaseButton = new createjs.Shape();
-		this.decreaseButton = new createjs.Shape();
-		
+        this.decreaseButton = new createjs.Shape();
+
         // Hinzufügen der Buttons zum Container
         this.addChild(this.increaseButton);
         this.addChild(this.decreaseButton);
-		
+
         this.addButtons();
         this.addButtonListeners();
-		   
+        this.addMouseListeners();
+
         stage.addChild(this);
 
         const self = this;
@@ -46,7 +45,6 @@ export class NumericStepper extends createjs.Container {
         document.addEventListener("keydown", function(event) {
             self.shiftPressed = event.shiftKey;
 
-            // Linke und rechte Pfeiltasten zur Bewegung des Cursors
             if (event.keyCode === 37) { // Linke Pfeiltaste
                 if (self.cursorIndex > 0) {
                     self.cursorIndex--;
@@ -71,8 +69,6 @@ export class NumericStepper extends createjs.Container {
                 }
             }
 
-            // Verarbeiten von Tastatureingaben
-            // Zahlen (0-9), Punkt, Komma und Rücktaste
             if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 190 || event.keyCode === 188 || event.keyCode === 8) {
                 if (event.keyCode === 8) { // Rücktaste
                     if (self.cursorIndex > 0) {
@@ -80,7 +76,6 @@ export class NumericStepper extends createjs.Container {
                         self.cursorIndex--;
                     }
                 } else {
-                    // Überprüfen, ob der Text die Breite überschreitet
                     const tempTextWidth = self.getWidthUpToIndex(self.cursorIndex + 1);
                     if (tempTextWidth <= self.width && self.textObj.text.length < self.maxLength) {
                         self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + event.key + self.textObj.text.slice(self.cursorIndex);
@@ -89,37 +84,25 @@ export class NumericStepper extends createjs.Container {
                 }
             }
 
-            // Aktualisierung der Cursorposition und Auswahlrechteck
             if (!self.shiftPressed) {
                 self.selectionStart = -1;
                 self.selectionEnd = -1;
                 self.selectionRect.graphics.clear();
-				self.drawCursor();
-				self.updateCursor();
+                self.drawCursor();
+                self.updateCursor();
             } else {
-				self.updateSelectionRect();
-			}
+                self.updateSelectionRect();
+            }
 
-            // Aktualisierung der Stage
             stage.update();
-			
-			
-			
-			
-			    if (event.keyCode === 13) {
-     
-		self.numericValue = parseFloat(self.textObj.text);
-	    self.dispatchChangeEvent();
-		
-    }
-			
-			
+
+            if (event.keyCode === 13) {
+                self.numericValue = parseFloat(self.textObj.text);
+                self.dispatchChangeEvent();
+            }
         });
     }
 
-    /**
-     * Zeichnet den initialen Text mit den angegebenen Parametern.
-     */
     drawText() {
         this.textObj = new createjs.Text(String(this.numericValue), this.styles, this.color);
         this.textObj.x = 0;
@@ -127,50 +110,50 @@ export class NumericStepper extends createjs.Container {
         this.addChild(this.textObj);
     }
 
-    /**
-     * Zeichnet den Cursor als vertikales Rechteck.
-     */
-    drawCursor() {
-		const backgroundRect = this.backgroundRect;
-		
-		this.removeAllChildren();
-		
-		this.addChild(backgroundRect);
-		this.addChild(this.increaseButton);
-        this.addChild(this.decreaseButton);
-		
-		this.addChild(this.textObj);
-        this.cursorObj = new createjs.Shape();
-        this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
-        this.updateCursor();
-        this.addChild(this.cursorObj);
-    }
+drawBackgroundAndBorder() {
+    this.backgroundRect = new createjs.Shape();
+    this.backgroundRect.graphics.setStrokeStyle(0);
+    this.backgroundRect.graphics.beginStroke("#A9A9A9");
+    this.backgroundRect.graphics.beginFill("#FFFFFF"); // Weiße Füllfarbe hinzufügen
+    this.backgroundRect.graphics.drawRect(-this.padding / 2, -this.padding / 2, this.width, this.textObj.getMeasuredHeight() + this.padding);
+    this.addChild(this.backgroundRect);
+}
 
-    /**
-     * Aktualisiert die Cursorposition basierend auf dem aktuellen Cursorindex.
-     */
+drawCursor() {
+    const backgroundRect = this.backgroundRect;
+    this.removeAllChildren();
+    
+
+	this.addChild(backgroundRect); // Hintergrundrechteck zuerst hinzufügen
+    this.addChild(this.textObj); // Text hinzufügen
+    this.addChild(this.selectionRect); // Auswahlrechteck hinzufügen
+    this.addChild(this.increaseButton); // Buttons hinzufügen
+    this.addChild(this.decreaseButton);
+
+    this.cursorObj = new createjs.Shape();
+    this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
+    this.updateCursor();
+    this.addChild(this.cursorObj);
+}
+
     updateCursor() {
         const cursorPositionText = this.textObj.text.slice(0, this.cursorIndex);
         const cursorWidth = new createjs.Text(cursorPositionText, this.styles, this.color).getMeasuredWidth();
         this.cursorObj.x = cursorWidth;
     }
 
-    /**
-     * Aktualisiert das Auswahlrechteck.
-     */
     updateSelectionRect() {
-        // Entfernen Sie den vorherigen weißen Text und Rechtecke, um doppelte Zeichnungen zu vermeiden
         this.removeAllChildren();
-        this.addChild(this.backgroundRect);
+
         this.addChild(this.textObj);
+		        this.addChild(this.backgroundRect);
         this.addChild(this.selectionRect);
-		this.addChild(this.increaseButton);
+        this.addChild(this.increaseButton);
         this.addChild(this.decreaseButton);
-		
-		this.selectionRect.graphics.clear();
-        // Überprüfen Sie, ob eine gültige Markierung vorliegt
+
+        this.selectionRect.graphics.clear();
+
         if (this.selectionStart !== -1 && this.selectionEnd !== -1 && this.selectionStart !== this.selectionEnd) {
-            // Bestimmen Sie die Start- und Endpositionen der Markierung
             const start = Math.min(this.selectionStart, this.selectionEnd);
             const end = Math.max(this.selectionStart, this.selectionEnd);
 
@@ -178,138 +161,150 @@ export class NumericStepper extends createjs.Container {
             const endX = this.getWidthUpToIndex(end);
             const rectWidth = endX - startX;
 
-            // Zeichnen Sie das blaue Rechteck mit einer Füllfarbe
-            
-            this.selectionRect.graphics.beginFill("#0000FF"); // Blaue Füllfarbe
+            this.selectionRect.graphics.beginFill("#0000FF");
             this.selectionRect.graphics.drawRect(startX, 0, rectWidth, this.textObj.getMeasuredHeight());
-			
 
-            // Setzen Sie den markierten Text in Weiß
             const selectedText = this.textObj.text.slice(start, end);
-            const whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF"); // Weißer Text
+            const whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF");
             whiteText.x = startX;
             whiteText.y = 0;
 
-            // Fügen Sie den weißen Text dem Container hinzu
             this.addChild(whiteText);
         }
     }
 
-    drawBackgroundAndBorder() {
-        // Erstellt eine Shape-Instanz für den Hintergrund und den Rahmen
-        this.backgroundRect = new createjs.Shape();
 
-        // Zeichnet den dunkelgrauen dünnen Rahmen
-        this.backgroundRect.graphics.setStrokeStyle(0);
-        this.backgroundRect.graphics.beginStroke("#A9A9A9"); // Dunkelgraue Farbe
-        this.backgroundRect.graphics.drawRect(-this.padding / 2, -this.padding / 2, this.width, this.textObj.getMeasuredHeight() + this.padding);
 
-        // Fügt die Shape-Instanz zum Container hinzu
-        this.addChild(this.backgroundRect);
+    addButtons() {
+        this.increaseButton.graphics.clear();
+        this.increaseButton.graphics.setStrokeStyle(1);
+        this.increaseButton.graphics.beginStroke("#A9A9A9");
+        this.increaseButton.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, (this.textObj.getMeasuredHeight() + this.padding) / 2)
+        this.increaseButton.graphics.drawRect(0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2);
+        this.increaseButton.graphics.endStroke();
+
+        this.increaseButton.graphics.beginFill("#000");
+        const midXIncrease = 12;
+        const baseYIncrease = this.padding/4;
+        const triangleHeight = 6;
+        this.increaseButton.graphics.moveTo(midXIncrease, baseYIncrease);
+        this.increaseButton.graphics.lineTo(midXIncrease + 4, baseYIncrease + triangleHeight);
+        this.increaseButton.graphics.lineTo(midXIncrease - 4, baseYIncrease + triangleHeight);
+        this.increaseButton.graphics.closePath();
+
+        this.decreaseButton.graphics.clear();
+        this.decreaseButton.graphics.setStrokeStyle(1);
+        this.decreaseButton.graphics.beginStroke("#A9A9A9");
+        this.decreaseButton.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, (this.textObj.getMeasuredHeight() + this.padding) / 2)
+        this.decreaseButton.graphics.drawRect(0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2);
+        this.decreaseButton.graphics.endStroke();
+
+        this.decreaseButton.graphics.beginFill("#000");
+        const midXDecrease = 12;
+        const baseYDecrease = (this.textObj.getMeasuredHeight()+this.padding)/2-this.padding/4;
+        this.decreaseButton.graphics.moveTo(midXDecrease, baseYDecrease);
+        this.decreaseButton.graphics.lineTo(midXDecrease + 4, baseYDecrease - triangleHeight);
+        this.decreaseButton.graphics.lineTo(midXDecrease - 4, baseYDecrease - triangleHeight);
+        this.decreaseButton.graphics.closePath();
+
+        const buttonX = this.width - this.padding / 2;
+        const increaseButtonY = -this.padding / 2;
+        const decreaseButtonY = (this.textObj.getMeasuredHeight() + this.padding) / 2 - this.padding / 2;
+
+        this.increaseButton.x = buttonX;
+        this.increaseButton.y = increaseButtonY;
+        this.decreaseButton.x = buttonX;
+        this.decreaseButton.y = decreaseButtonY;
     }
 
-    // Methode, um Buttons hinzuzufügen
-addButtons() {
-    // Erstellen des Erhöhungsbuttons
-// Erhöhungstaste
-this.increaseButton.graphics.clear();
-this.increaseButton.graphics.setStrokeStyle(1);
-this.increaseButton.graphics.beginStroke("#A9A9A9"); // Dunkelgraue Kontur
-this.increaseButton.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, (this.textObj.getMeasuredHeight() + this.padding) / 2)
-this.increaseButton.graphics.drawRect(0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2);
-this.increaseButton.graphics.endStroke();
-
-// Zeichne ein Dreieck auf der Erhöhungstaste
-this.increaseButton.graphics.beginFill("#000"); // Schwarze Farbe für das Dreieck
-const midXIncrease = 12;
-const baseYIncrease = this.padding/4; // Basisposition des Dreiecks
-const triangleHeight = 6; // Höhe des Dreiecks
-this.increaseButton.graphics.moveTo(midXIncrease, baseYIncrease);
-this.increaseButton.graphics.lineTo(midXIncrease + 4, baseYIncrease + triangleHeight);
-this.increaseButton.graphics.lineTo(midXIncrease - 4, baseYIncrease + triangleHeight);
-this.increaseButton.graphics.closePath();
-
-// Erniedrigungstaste
-this.decreaseButton.graphics.clear();
-this.decreaseButton.graphics.setStrokeStyle(1);
-this.decreaseButton.graphics.beginStroke("#A9A9A9"); // Dunkelgraue Kontur
-this.decreaseButton.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, (this.textObj.getMeasuredHeight() + this.padding) / 2)
-this.decreaseButton.graphics.drawRect(0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2);
-this.decreaseButton.graphics.endStroke();
-
-// Zeichne ein Dreieck auf der Erniedrigungstaste
-this.decreaseButton.graphics.beginFill("#000"); // Schwarze Farbe für das Dreieck
-const midXDecrease = 12;
-const baseYDecrease = (this.textObj.getMeasuredHeight()+this.padding)/2-this.padding/4; // Basisposition des Dreiecks
-this.decreaseButton.graphics.moveTo(midXDecrease, baseYDecrease);
-this.decreaseButton.graphics.lineTo(midXDecrease + 4, baseYDecrease - triangleHeight);
-this.decreaseButton.graphics.lineTo(midXDecrease - 4, baseYDecrease - triangleHeight);
-this.decreaseButton.graphics.closePath();
-
-// Positioniere die Schaltflächen
-const buttonX = this.width - this.padding / 2;
-const increaseButtonY = -this.padding / 2;
-const decreaseButtonY = (this.textObj.getMeasuredHeight() + this.padding) / 2 - this.padding / 2;
-
-this.increaseButton.x = buttonX;
-this.increaseButton.y = increaseButtonY;
-this.decreaseButton.x = buttonX;
-this.decreaseButton.y = decreaseButtonY;
-
-}
-
-	
-	// Methode, um Button-Listener hinzuzufügen
     addButtonListeners() {
         const self = this;
 
-        // Listener für Erhöhungsbutton
         self.increaseButton.addEventListener("click", function() {
             self.increaseValue();
         });
 
-        // Listener für Erniedrigungsbutton
         self.decreaseButton.addEventListener("click", function() {
             self.decreaseValue();
         });
     }
 
-// Methode, um den Wert zu erhöhen
-increaseValue() {
-    let currentValue = parseFloat(this.textObj.text);
-    if (!isNaN(currentValue)) {
-        currentValue += this.stepValue;
-        this.textObj.text = currentValue.toFixed(this.decimalPlaces);
-        this.updateCursor();
-		this.numericValue = currentValue;
-		this.dispatchChangeEvent();
+    increaseValue() {
+        let currentValue = parseFloat(this.textObj.text);
+        if (!isNaN(currentValue)) {
+            currentValue += this.stepValue;
+            this.textObj.text = currentValue.toFixed(this.decimalPlaces);
+            this.updateCursor();
+            this.numericValue = currentValue;
+            this.dispatchChangeEvent();
+        }
     }
-}
 
-// Methode, um den Wert zu verringern
-decreaseValue() {
-    let currentValue = parseFloat(this.textObj.text);
-    if (!isNaN(currentValue)) {
-        currentValue -= this.stepValue;
-        this.textObj.text = currentValue.toFixed(this.decimalPlaces);
-        this.updateCursor();
-		this.numericValue = currentValue;
-		this.dispatchChangeEvent();
+    decreaseValue() {
+        let currentValue = parseFloat(this.textObj.text);
+        if (!isNaN(currentValue)) {
+            currentValue -= this.stepValue;
+            this.textObj.text = currentValue.toFixed(this.decimalPlaces);
+            this.updateCursor();
+            this.numericValue = currentValue;
+            this.dispatchChangeEvent();
+        }
     }
-}
 
-
-    /**
-     * Gibt die Breite des Texts bis zu einem bestimmten Index zurück.
-     */
     getWidthUpToIndex(index) {
         const textUpToIndex = this.textObj.text.slice(0, index);
         const tempText = new createjs.Text(textUpToIndex, this.styles, this.color);
         return tempText.getMeasuredWidth();
     }
-	
-		dispatchChangeEvent() {
-			
-    this.dispatchEvent("change");
-}
+
+    dispatchChangeEvent() {
+        this.dispatchEvent("change");
+    }
+
+    addMouseListeners() {
+        const self = this;
+		
+		    this.backgroundRect.addEventListener("mousedown", function(event) {
+        console.log("Background rectangle clicked!");
+   
+    });
+
+        this.textObj.addEventListener("mousedown", function(event) {
+            const mouseX = event.localX;
+            self.cursorIndex = self.getCursorIndexFromX(mouseX);
+            self.selectionStart = self.cursorIndex;
+            self.updateCursor();
+            self.updateSelectionRect();
+            stage.update();
+
+            self.textObj.addEventListener("pressmove", self.handlePressMove.bind(self));
+        });
+
+        this.textObj.addEventListener("pressup", function() {
+            self.textObj.removeEventListener("pressmove", self.handlePressMove.bind(self));
+        });
+    }
+
+    handlePressMove(event) {
+        const mouseX = event.localX;
+        this.cursorIndex = this.getCursorIndexFromX(mouseX);
+        this.selectionEnd = this.cursorIndex;
+        this.updateSelectionRect();
+        stage.update();
+    }
+
+    getCursorIndexFromX(x) {
+        const charWidths = [];
+        for (let i = 0; i < this.textObj.text.length; i++) {
+            charWidths[i] = this.getWidthUpToIndex(i + 1);
+        }
+
+        for (let i = 0; i < charWidths.length; i++) {
+            if (x < charWidths[i]) {
+                return i;
+            }
+        }
+
+        return this.textObj.text.length;
+    }
 }
