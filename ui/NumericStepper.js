@@ -26,6 +26,11 @@ export class NumericStepper extends createjs.Container {
         this.selectionRect = new createjs.Shape();
         this.addChild(this.selectionRect);
 
+
+this.whiteText = new createjs.Shape();
+        this.addChild(this.whiteText);
+		
+		
         this.increaseButton = new createjs.Shape();
         this.decreaseButton = new createjs.Shape();
 
@@ -88,12 +93,13 @@ export class NumericStepper extends createjs.Container {
                 self.selectionStart = -1;
                 self.selectionEnd = -1;
                 self.selectionRect.graphics.clear();
-                self.drawCursor();
+                //self.drawCursor();
                 self.updateCursor();
-            } else {
-                self.updateSelectionRect();
-            }
-
+	
+            } 
+			
+			
+			self.updateSelectionRect();
             stage.update();
 
             if (event.keyCode === 13) {
@@ -120,20 +126,23 @@ drawBackgroundAndBorder() {
 }
 
 drawCursor() {
-    const backgroundRect = this.backgroundRect;
-    this.removeAllChildren();
-    
 
-	this.addChild(backgroundRect); // Hintergrundrechteck zuerst hinzufügen
-    this.addChild(this.textObj); // Text hinzufügen
-    this.addChild(this.selectionRect); // Auswahlrechteck hinzufügen
-    this.addChild(this.increaseButton); // Buttons hinzufügen
-    this.addChild(this.decreaseButton);
+        this.removeAllChildren();
 
+		this.addChild(this.backgroundRect);
+
+        this.addChild(this.textObj);
+        this.addChild(this.selectionRect);
+		this.addChild(this.whiteText);
+        this.addChild(this.increaseButton);
+        this.addChild(this.decreaseButton);
+		this.addChild(this.cursorObj);
+		
     this.cursorObj = new createjs.Shape();
     this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
     this.updateCursor();
     this.addChild(this.cursorObj);
+
 }
 
     updateCursor() {
@@ -145,12 +154,14 @@ drawCursor() {
     updateSelectionRect() {
         this.removeAllChildren();
 
+		this.addChild(this.backgroundRect);
         this.addChild(this.textObj);
-		        this.addChild(this.backgroundRect);
+		
         this.addChild(this.selectionRect);
         this.addChild(this.increaseButton);
         this.addChild(this.decreaseButton);
-
+		this.addChild(this.cursorObj)
+		
         this.selectionRect.graphics.clear();
 
         if (this.selectionStart !== -1 && this.selectionEnd !== -1 && this.selectionStart !== this.selectionEnd) {
@@ -165,12 +176,12 @@ drawCursor() {
             this.selectionRect.graphics.drawRect(startX, 0, rectWidth, this.textObj.getMeasuredHeight());
 
             const selectedText = this.textObj.text.slice(start, end);
-            const whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF");
-            whiteText.x = startX;
-            whiteText.y = 0;
+            this.whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF");
+            this.whiteText.x = startX;
+            this.whiteText.y = 0;
 
-            this.addChild(whiteText);
-        }
+            this.addChild(this.whiteText);
+        } 
     }
 
 
@@ -238,6 +249,18 @@ drawCursor() {
             this.numericValue = currentValue;
             this.dispatchChangeEvent();
         }
+		
+
+                this.selectionStart = -1;
+                this.selectionEnd = -1;
+                this.selectionRect.graphics.clear();
+                this.updateCursor();
+    
+
+		this.updateSelectionRect();
+        stage.update();
+		
+
     }
 
     decreaseValue() {
@@ -249,6 +272,18 @@ drawCursor() {
             this.numericValue = currentValue;
             this.dispatchChangeEvent();
         }
+		
+		               this.selectionStart = -1;
+                this.selectionEnd = -1;
+                this.selectionRect.graphics.clear();
+                this.updateCursor();
+    
+
+		this.updateSelectionRect();
+        stage.update();
+		
+		
+		
     }
 
     getWidthUpToIndex(index) {
@@ -261,29 +296,48 @@ drawCursor() {
         this.dispatchEvent("change");
     }
 
-    addMouseListeners() {
-        const self = this;
-		
-		    this.backgroundRect.addEventListener("mousedown", function(event) {
-        console.log("Background rectangle clicked!");
-   
+addMouseListeners() {
+    const self = this;
+
+    this.backgroundRect.addEventListener("click", function(event) {
+        //const mouseX = event.localX;
+        //self.cursorIndex = self.getCursorIndexFromX(mouseX);
+
+		self.updateCursor();
+
+        stage.update();
     });
 
-        this.textObj.addEventListener("mousedown", function(event) {
-            const mouseX = event.localX;
-            self.cursorIndex = self.getCursorIndexFromX(mouseX);
-            self.selectionStart = self.cursorIndex;
-            self.updateCursor();
-            self.updateSelectionRect();
-            stage.update();
+    // Mausereignis auch auf dem Textobjekt abfangen
+    this.backgroundRect.addEventListener("mousedown", function(event) {
+		
+		
+		self.removeAllChildren();
 
-            self.textObj.addEventListener("pressmove", self.handlePressMove.bind(self));
-        });
+		self.addChild(self.backgroundRect);
+        self.addChild(self.textObj);
+		
+        self.addChild(self.increaseButton);
+        self.addChild(self.decreaseButton);
+		self.addChild(self.cursorObj)
+		
+		
+        const mouseX = event.localX;
+        self.cursorIndex = self.getCursorIndexFromX(mouseX);
+        self.selectionStart = self.cursorIndex;
+		self.selectionEnd = -1;
+        self.updateCursor();
+        self.updateSelectionRect();
+        stage.update();
 
-        this.textObj.addEventListener("pressup", function() {
-            self.textObj.removeEventListener("pressmove", self.handlePressMove.bind(self));
-        });
-    }
+        self.backgroundRect.addEventListener("pressmove", self.handlePressMove.bind(self));
+    });
+
+    this.backgroundRect.addEventListener("pressup", function() {
+        self.backgroundRect.removeEventListener("pressmove", self.handlePressMove.bind(self));
+    });
+}
+
 
     handlePressMove(event) {
         const mouseX = event.localX;
@@ -293,18 +347,22 @@ drawCursor() {
         stage.update();
     }
 
-    getCursorIndexFromX(x) {
-        const charWidths = [];
-        for (let i = 0; i < this.textObj.text.length; i++) {
-            charWidths[i] = this.getWidthUpToIndex(i + 1);
-        }
-
-        for (let i = 0; i < charWidths.length; i++) {
-            if (x < charWidths[i]) {
-                return i;
-            }
-        }
-
-        return this.textObj.text.length;
+getCursorIndexFromX(x) {
+    const charWidths = [];
+    for (let i = 0; i < this.textObj.text.length; i++) {
+        charWidths[i] = this.getWidthUpToIndex(i + 1);
     }
+
+    // Berechne die halbe Breite jedes Buchstabens
+    for (let i = 0; i < charWidths.length; i++) {
+        const halfCharWidth = (charWidths[i] - (i > 0 ? charWidths[i - 1] : 0)) / 2;
+        const threshold = (i > 0 ? charWidths[i - 1] : 0) + halfCharWidth;
+
+        if (x < threshold) {
+            return i;
+        }
+    }
+
+    return this.textObj.text.length;
+}
 }
