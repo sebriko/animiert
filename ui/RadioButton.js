@@ -60,7 +60,7 @@ export class RadioButton extends createjs.Container {
         this.addChild(this.container);
         stage.addChild(this);
         stage.enableMouseOver();
-		stage.update();
+        stage.update();
     }
 
     /**
@@ -72,7 +72,7 @@ export class RadioButton extends createjs.Container {
         this.background.graphics.beginFill("#FFFFFF");
         this.background.graphics.drawCircle(this.size / 2, this.size / 2, this.size / 2);
         this.background.graphics.endFill();
-		stage.update();
+        stage.update();
     }
 
     /**
@@ -110,7 +110,7 @@ export class RadioButton extends createjs.Container {
         this.background.graphics.beginFill("#FFFFFF");
         this.background.graphics.drawCircle(this.size / 2, this.size / 2, this.size / 2);
         this.background.graphics.endFill();
-		stage.update();
+        stage.update();
     }
 
     /**
@@ -134,6 +134,9 @@ export class RadioButton extends createjs.Container {
                 }
             });
             this.updateRadioButton();
+
+            this.dispatchEvent(new createjs.Event("change"));
+			console.log("event")
         }
     }
 
@@ -160,7 +163,7 @@ export class RadioButton extends createjs.Container {
             this.labelText.getBounds().height
         );
         this.labelBackground.graphics.endFill();
-		stage.update();
+        stage.update();
     }
 
     /**
@@ -170,7 +173,7 @@ export class RadioButton extends createjs.Container {
     setFont(font) {
         this.font = font;
         this.labelText.font = this.fontSize + "px " + font;
-		stage.update();
+        stage.update();
     }
 
     /**
@@ -182,7 +185,7 @@ export class RadioButton extends createjs.Container {
         this.labelText.font = fontSize + "px " + this.font;
         this.labelText.lineHeight = fontSize + 4;
         this.drawLabelBackground();
-		stage.update();
+        stage.update();
     }
 
     /**
