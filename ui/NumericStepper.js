@@ -17,24 +17,20 @@ export class NumericStepper extends createjs.Container {
 
         this.textObj = new createjs.Text("", this.styles, this.color);
         const textHeight = this.textObj.getMeasuredHeight();
-        
-		this.drawBackgroundAndBorder();
-		this.drawText();
-		this.drawCursor();
-        
+
+        this.drawBackgroundAndBorder();
+        this.drawText();
+        this.drawCursor();
 
         this.selectionRect = new createjs.Shape();
         this.addChild(this.selectionRect);
 
-
-this.whiteText = new createjs.Shape();
+        this.whiteText = new createjs.Text("", this.styles, "#FFFFFF");
         this.addChild(this.whiteText);
-		
-		
+
         this.increaseButton = new createjs.Shape();
         this.decreaseButton = new createjs.Shape();
 
-        // Hinzufügen der Buttons zum Container
         this.addChild(this.increaseButton);
         this.addChild(this.decreaseButton);
 
@@ -46,11 +42,10 @@ this.whiteText = new createjs.Shape();
 
         const self = this;
 
-        // Event-Listener für Tastatureingaben
         document.addEventListener("keydown", function(event) {
             self.shiftPressed = event.shiftKey;
 
-            if (event.keyCode === 37) { // Linke Pfeiltaste
+            if (event.keyCode === 37) { // Left arrow
                 if (self.cursorIndex > 0) {
                     self.cursorIndex--;
                 }
@@ -61,7 +56,7 @@ this.whiteText = new createjs.Shape();
                         self.selectionStart = self.selectionEnd + 1;
                     }
                 }
-            } else if (event.keyCode === 39) { // Rechte Pfeiltaste
+            } else if (event.keyCode === 39) { // Right arrow
                 if (self.cursorIndex < self.textObj.text.length) {
                     self.cursorIndex++;
                 }
@@ -74,35 +69,52 @@ this.whiteText = new createjs.Shape();
                 }
             }
 
-            if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 190 || event.keyCode === 188 || event.keyCode === 8) {
-                if (event.keyCode === 8) { // Rücktaste
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 190 || event.keyCode === 188) {
+                const tempTextWidth = self.getWidthUpToIndex(self.cursorIndex + 1);
+                if (tempTextWidth <= self.width && self.textObj.text.length < self.maxLength) {
+                    self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + event.key + self.textObj.text.slice(self.cursorIndex);
+                    self.cursorIndex++;
+                }
+            }
+
+            if (event.keyCode === 8 || event.keyCode === 46) { // Backspace or Delete
+                if (self.selectionStart !== -1 && self.selectionEnd !== -1 && self.selectionStart !== self.selectionEnd) {
+                    const start = Math.min(self.selectionStart, self.selectionEnd);
+                    const end = Math.max(self.selectionStart, self.selectionEnd);
+                    self.textObj.text = self.textObj.text.slice(0, start) + self.textObj.text.slice(end);
+                    self.cursorIndex = start;
+                } else if (event.keyCode === 8) { // Backspace
                     if (self.cursorIndex > 0) {
                         self.textObj.text = self.textObj.text.slice(0, self.cursorIndex - 1) + self.textObj.text.slice(self.cursorIndex);
                         self.cursorIndex--;
                     }
-                } else {
-                    const tempTextWidth = self.getWidthUpToIndex(self.cursorIndex + 1);
-                    if (tempTextWidth <= self.width && self.textObj.text.length < self.maxLength) {
-                        self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + event.key + self.textObj.text.slice(self.cursorIndex);
-                        self.cursorIndex++;
+                } else if (event.keyCode === 46) { // Delete
+                    if (self.cursorIndex < self.textObj.text.length) {
+                        self.textObj.text = self.textObj.text.slice(0, self.cursorIndex) + self.textObj.text.slice(self.cursorIndex + 1);
                     }
                 }
+
+                self.selectionStart = -1;
+                self.selectionEnd = -1;
+                self.selectionRect.graphics.clear();
+                self.whiteText.text = ""; // Lösche den weißen Text
+                self.updateCursor();
+                self.updateSelectionRect();
+                stage.update();
             }
 
             if (!self.shiftPressed) {
                 self.selectionStart = -1;
                 self.selectionEnd = -1;
                 self.selectionRect.graphics.clear();
-                //self.drawCursor();
+                self.whiteText.text = ""; // Lösche den weißen Text
                 self.updateCursor();
-	
-            } 
-			
-			
-			self.updateSelectionRect();
+            }
+
+            self.updateSelectionRect();
             stage.update();
 
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13) { // Return
                 self.numericValue = parseFloat(self.textObj.text);
                 self.dispatchChangeEvent();
             }
@@ -116,34 +128,21 @@ this.whiteText = new createjs.Shape();
         this.addChild(this.textObj);
     }
 
-drawBackgroundAndBorder() {
-    this.backgroundRect = new createjs.Shape();
-    this.backgroundRect.graphics.setStrokeStyle(0);
-    this.backgroundRect.graphics.beginStroke("#A9A9A9");
-    this.backgroundRect.graphics.beginFill("#FFFFFF"); // Weiße Füllfarbe hinzufügen
-    this.backgroundRect.graphics.drawRect(-this.padding / 2, -this.padding / 2, this.width, this.textObj.getMeasuredHeight() + this.padding);
-    this.addChild(this.backgroundRect);
-}
+    drawBackgroundAndBorder() {
+        this.backgroundRect = new createjs.Shape();
+        this.backgroundRect.graphics.setStrokeStyle(0.5);
+        this.backgroundRect.graphics.beginStroke("#CCCCCC");
+        this.backgroundRect.graphics.beginFill("#FFFFFF"); // Weiße Füllfarbe hinzufügen
+        this.backgroundRect.graphics.drawRect(-this.padding / 2, -this.padding / 2, this.width, this.textObj.getMeasuredHeight() + this.padding);
+        this.addChild(this.backgroundRect);
+    }
 
-drawCursor() {
-
-        this.removeAllChildren();
-
-		this.addChild(this.backgroundRect);
-
-        this.addChild(this.textObj);
-        this.addChild(this.selectionRect);
-		this.addChild(this.whiteText);
-        this.addChild(this.increaseButton);
-        this.addChild(this.decreaseButton);
-		this.addChild(this.cursorObj);
-		
-    this.cursorObj = new createjs.Shape();
-    this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
-    this.updateCursor();
-    this.addChild(this.cursorObj);
-
-}
+    drawCursor() {
+        this.cursorObj = new createjs.Shape();
+        this.cursorObj.graphics.beginFill("#000").drawRect(0, 0, 1, this.textObj.getMeasuredHeight());
+        this.updateCursor();
+        this.addChild(this.cursorObj);
+    }
 
     updateCursor() {
         const cursorPositionText = this.textObj.text.slice(0, this.cursorIndex);
@@ -152,17 +151,8 @@ drawCursor() {
     }
 
     updateSelectionRect() {
-        this.removeAllChildren();
-
-		this.addChild(this.backgroundRect);
-        this.addChild(this.textObj);
-		
-        this.addChild(this.selectionRect);
-        this.addChild(this.increaseButton);
-        this.addChild(this.decreaseButton);
-		this.addChild(this.cursorObj)
-		
         this.selectionRect.graphics.clear();
+        this.whiteText.text = ""; // Lösche den weißen Text
 
         if (this.selectionStart !== -1 && this.selectionEnd !== -1 && this.selectionStart !== this.selectionEnd) {
             const start = Math.min(this.selectionStart, this.selectionEnd);
@@ -181,42 +171,12 @@ drawCursor() {
             this.whiteText.y = 0;
 
             this.addChild(this.whiteText);
-        } 
+        }
     }
 
-
-
     addButtons() {
-        this.increaseButton.graphics.clear();
-        this.increaseButton.graphics.setStrokeStyle(1);
-        this.increaseButton.graphics.beginStroke("#A9A9A9");
-        this.increaseButton.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, (this.textObj.getMeasuredHeight() + this.padding) / 2)
-        this.increaseButton.graphics.drawRect(0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2);
-        this.increaseButton.graphics.endStroke();
-
-        this.increaseButton.graphics.beginFill("#000");
-        const midXIncrease = 12;
-        const baseYIncrease = this.padding/4;
-        const triangleHeight = 6;
-        this.increaseButton.graphics.moveTo(midXIncrease, baseYIncrease);
-        this.increaseButton.graphics.lineTo(midXIncrease + 4, baseYIncrease + triangleHeight);
-        this.increaseButton.graphics.lineTo(midXIncrease - 4, baseYIncrease + triangleHeight);
-        this.increaseButton.graphics.closePath();
-
-        this.decreaseButton.graphics.clear();
-        this.decreaseButton.graphics.setStrokeStyle(1);
-        this.decreaseButton.graphics.beginStroke("#A9A9A9");
-        this.decreaseButton.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, (this.textObj.getMeasuredHeight() + this.padding) / 2)
-        this.decreaseButton.graphics.drawRect(0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2);
-        this.decreaseButton.graphics.endStroke();
-
-        this.decreaseButton.graphics.beginFill("#000");
-        const midXDecrease = 12;
-        const baseYDecrease = (this.textObj.getMeasuredHeight()+this.padding)/2-this.padding/4;
-        this.decreaseButton.graphics.moveTo(midXDecrease, baseYDecrease);
-        this.decreaseButton.graphics.lineTo(midXDecrease + 4, baseYDecrease - triangleHeight);
-        this.decreaseButton.graphics.lineTo(midXDecrease - 4, baseYDecrease - triangleHeight);
-        this.decreaseButton.graphics.closePath();
+        this.drawButton(this.increaseButton, "#CCCCCC", 0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2, "#444", true);
+        this.drawButton(this.decreaseButton, "#CCCCCC", 0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2, "#444", false);
 
         const buttonX = this.width - this.padding / 2;
         const increaseButtonY = -this.padding / 2;
@@ -226,6 +186,33 @@ drawCursor() {
         this.increaseButton.y = increaseButtonY;
         this.decreaseButton.x = buttonX;
         this.decreaseButton.y = decreaseButtonY;
+    }
+
+    drawButton(button, strokeColor, x, y, width, height, fillColor, isUpArrow) {
+        button.graphics.clear();
+        button.graphics.setStrokeStyle(0.5);
+        button.graphics.beginStroke(strokeColor);
+        button.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, height);
+        button.graphics.drawRect(x, y, width, height);
+        button.graphics.endStroke();
+
+        button.graphics.beginFill(fillColor);
+        const midX = width / 2;
+        let baseY = 0;
+        const triangleHeight = 6;
+
+        if (isUpArrow) {
+			baseY = this.padding/4;
+            button.graphics.moveTo(midX, baseY);
+            button.graphics.lineTo(midX - 4, baseY+triangleHeight);
+            button.graphics.lineTo(midX + 4, baseY+triangleHeight);
+        } else {
+			baseY = height - this.padding/4;
+            button.graphics.moveTo(midX, baseY);
+            button.graphics.lineTo(midX + 4, baseY - triangleHeight);
+            button.graphics.lineTo(midX - 4, baseY - triangleHeight);
+        }
+        button.graphics.closePath();
     }
 
     addButtonListeners() {
@@ -238,131 +225,110 @@ drawCursor() {
         self.decreaseButton.addEventListener("click", function() {
             self.decreaseValue();
         });
+
+        self.increaseButton.addEventListener("mouseover", function() {
+            self.onButtonMouseOver(self.increaseButton);
+        });
+
+        self.increaseButton.addEventListener("mouseout", function() {
+            self.onButtonMouseOut(self.increaseButton);
+        });
+
+        self.decreaseButton.addEventListener("mouseover", function() {
+            self.onButtonMouseOver(self.decreaseButton);
+        });
+
+        self.decreaseButton.addEventListener("mouseout", function() {
+            self.onButtonMouseOut(self.decreaseButton);
+        });
+    }
+
+    addMouseListeners() {
+        const self = this;
+
+        this.addEventListener("click", function(event) {
+            const localPoint = self.globalToLocal(event.stageX, event.stageY);
+            self.cursorIndex = self.getCursorIndexFromX(localPoint.x);
+            self.updateCursor();
+            stage.update();
+        });
+
+        this.addEventListener("mousedown", function(event) {
+            const localPoint = self.globalToLocal(event.stageX, event.stageY);
+            self.selectionStart = self.getCursorIndexFromX(localPoint.x);
+        });
+
+        this.addEventListener("pressmove", function(event) {
+            const localPoint = self.globalToLocal(event.stageX, event.stageY);
+            self.selectionEnd = self.getCursorIndexFromX(localPoint.x);
+            self.updateSelectionRect();
+            stage.update();
+        });
+
+        this.addEventListener("pressup", function(event) {
+            const localPoint = self.globalToLocal(event.stageX, event.stageY);
+            self.selectionEnd = self.getCursorIndexFromX(localPoint.x);
+            self.updateSelectionRect();
+            stage.update();
+        });
     }
 
     increaseValue() {
-        let currentValue = parseFloat(this.textObj.text);
-        if (!isNaN(currentValue)) {
-            currentValue += this.stepValue;
-            this.textObj.text = currentValue.toFixed(this.decimalPlaces);
-            this.updateCursor();
-            this.numericValue = currentValue;
-            this.dispatchChangeEvent();
-        }
-		
-
-                this.selectionStart = -1;
-                this.selectionEnd = -1;
-                this.selectionRect.graphics.clear();
-                this.updateCursor();
-    
-
-		this.updateSelectionRect();
+		this.numericValue = parseFloat(this.textObj.text);
+        this.numericValue += this.stepValue;
+        this.textObj.text = String(this.numericValue);
+        this.updateCursor();
         stage.update();
-		
-
+        this.dispatchChangeEvent();
     }
 
     decreaseValue() {
-        let currentValue = parseFloat(this.textObj.text);
-        if (!isNaN(currentValue)) {
-            currentValue -= this.stepValue;
-            this.textObj.text = currentValue.toFixed(this.decimalPlaces);
-            this.updateCursor();
-            this.numericValue = currentValue;
-            this.dispatchChangeEvent();
-        }
-		
-		               this.selectionStart = -1;
-                this.selectionEnd = -1;
-                this.selectionRect.graphics.clear();
-                this.updateCursor();
-    
-
-		this.updateSelectionRect();
+		this.numericValue = parseFloat(this.textObj.text);
+        this.numericValue -= this.stepValue;
+        this.textObj.text = String(this.numericValue);
+        this.updateCursor();
         stage.update();
-		
-		
-		
+        this.dispatchChangeEvent();
+    }
+
+    onButtonMouseOver(button) {
+        button.graphics.clear();
+        this.drawButton(button, "#228B22", 0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2, "#444", button === this.increaseButton);
+        stage.update();
+    }
+
+    onButtonMouseOut(button) {
+        button.graphics.clear();
+        this.drawButton(button, "#CCCCCC", 0, 0, 24, (this.textObj.getMeasuredHeight() + this.padding) / 2, "#444", button === this.increaseButton);
+        stage.update();
     }
 
     getWidthUpToIndex(index) {
-        const textUpToIndex = this.textObj.text.slice(0, index);
-        const tempText = new createjs.Text(textUpToIndex, this.styles, this.color);
+        const tempText = new createjs.Text(this.textObj.text.slice(0, index), this.styles, this.color);
         return tempText.getMeasuredWidth();
     }
 
-    dispatchChangeEvent() {
-        this.dispatchEvent("change");
-    }
-
-addMouseListeners() {
-    const self = this;
-
-    this.backgroundRect.addEventListener("click", function(event) {
-        //const mouseX = event.localX;
-        //self.cursorIndex = self.getCursorIndexFromX(mouseX);
-
-		self.updateCursor();
-
-        stage.update();
-    });
-
-    // Mausereignis auch auf dem Textobjekt abfangen
-    this.backgroundRect.addEventListener("mousedown", function(event) {
-		
-		
-		self.removeAllChildren();
-
-		self.addChild(self.backgroundRect);
-        self.addChild(self.textObj);
-		
-        self.addChild(self.increaseButton);
-        self.addChild(self.decreaseButton);
-		self.addChild(self.cursorObj)
-		
-		
-        const mouseX = event.localX;
-        self.cursorIndex = self.getCursorIndexFromX(mouseX);
-        self.selectionStart = self.cursorIndex;
-		self.selectionEnd = -1;
-        self.updateCursor();
-        self.updateSelectionRect();
-        stage.update();
-
-        self.backgroundRect.addEventListener("pressmove", self.handlePressMove.bind(self));
-    });
-
-    this.backgroundRect.addEventListener("pressup", function() {
-        self.backgroundRect.removeEventListener("pressmove", self.handlePressMove.bind(self));
-    });
-}
-
-
-    handlePressMove(event) {
-        const mouseX = event.localX;
-        this.cursorIndex = this.getCursorIndexFromX(mouseX);
-        this.selectionEnd = this.cursorIndex;
-        this.updateSelectionRect();
-        stage.update();
-    }
-
-getCursorIndexFromX(x) {
-    const charWidths = [];
-    for (let i = 0; i < this.textObj.text.length; i++) {
-        charWidths[i] = this.getWidthUpToIndex(i + 1);
-    }
-
-    // Berechne die halbe Breite jedes Buchstabens
-    for (let i = 0; i < charWidths.length; i++) {
-        const halfCharWidth = (charWidths[i] - (i > 0 ? charWidths[i - 1] : 0)) / 2;
-        const threshold = (i > 0 ? charWidths[i - 1] : 0) + halfCharWidth;
-
-        if (x < threshold) {
-            return i;
+	getCursorIndexFromX(x) {
+        const charWidths = [];
+        for (let i = 0; i < this.textObj.text.length; i++) {
+            charWidths[i] = this.getWidthUpToIndex(i + 1);
         }
+
+        // Berechne die halbe Breite jedes Buchstabens
+        for (let i = 0; i < charWidths.length; i++) {
+            const halfCharWidth = (charWidths[i] - (i > 0 ? charWidths[i - 1] : 0)) / 2;
+            const threshold = (i > 0 ? charWidths[i - 1] : 0) + halfCharWidth;
+
+            if (x < threshold) {
+                return i;
+            }
+        }
+
+        return this.textObj.text.length;
     }
 
-    return this.textObj.text.length;
-}
+    dispatchChangeEvent() {
+        const event = new createjs.Event("change", true, false);
+        this.dispatchEvent(event);
+    }
 }
