@@ -169,7 +169,7 @@ export class NumericStepper extends createjs.Container {
             this.whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF");
             this.whiteText.x = startX;
             this.whiteText.y = 0;
-
+console.log("Selection")
             this.addChild(this.whiteText);
         }
     }
@@ -255,7 +255,12 @@ export class NumericStepper extends createjs.Container {
 
         this.addEventListener("mousedown", function(event) {
             const localPoint = self.globalToLocal(event.stageX, event.stageY);
-            self.selectionStart = self.getCursorIndexFromX(localPoint.x);
+	
+    const buttonX = self.increaseButton.x; 
+    if (localPoint.x < buttonX) {
+        self.selectionStart = self.getCursorIndexFromX(localPoint.x);
+    }
+			
         });
 
         this.addEventListener("pressmove", function(event) {
