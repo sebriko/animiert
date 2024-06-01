@@ -53,11 +53,11 @@ export class ProgressSlider extends createjs.Container {
     drawBackground(fillColor) {
         this.background.graphics.clear();
         if (this.orientation === "horizontal") {
-            this.background.graphics.setStrokeStyle(1, "round").beginStroke(fillColor);
+            this.background.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
             this.background.graphics.moveTo(0, 0);
             this.background.graphics.lineTo(this.length, 0);
         } else if (this.orientation === "vertical") {
-            this.background.graphics.setStrokeStyle(1, "round").beginStroke(fillColor);
+            this.background.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
             this.background.graphics.moveTo(0, 0);
             this.background.graphics.lineTo(0, this.length);
         }
