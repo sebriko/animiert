@@ -1,28 +1,27 @@
-/**
- * Represents a button slider control.
- * @extends {createjs.Container}
- */
+// ButtonSlider-Klasse mit Strichklick-Funktionalität
 export class ButtonSlider extends createjs.Container {
     /**
      * Creates an instance of ButtonSlider.
-     * @param {number} size The size of the slider.
-     * @param {number} width The width of the slider.
-     * @param {number} height The height of the slider.
-     * @param {number} minValue The minimum value of the slider.
-     * @param {number} maxValue The maximum value of the slider.
-     * @param {number} defaultValue The default value of the slider.
-     * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
+     * @param {number} size Die Größe des Schiebereglers.
+     * @param {number} width Die Breite des Schiebereglers.
+     * @param {number} height Die Höhe des Schiebereglers.
+     * @param {number} minValue Der minimale Wert des Schiebereglers.
+     * @param {number} maxValue Der maximale Wert des Schiebereglers.
+     * @param {number} defaultValue Der Standardwert des Schiebereglers.
+     * @param {string} [orientation='horizontal'] Die Ausrichtung des Schiebereglers (horizontal oder vertikal).
      * 
      * @example
-     * const slider = new ButtonSlider(100, 200, 20, 0, 100, 50, "Arial", 14, "horizontal");
-     * // Add an event listener to handle slider value changes
+     * const slider = new ButtonSlider(100, 200, 20, 0, 100, 50, "horizontal");
+     * // Fügen Sie einen Event-Listener hinzu, um Änderungen des Schiebereglers zu behandeln
      * slider.addEventListener("change", function() {
-     *     // Here you can define your reaction to slider changes
-     *     console.log("Slider value changed:", slider.value);
+     *     // Hier können Sie Ihre Reaktion auf Schieberegleränderungen definieren
+     *     console.log("Schiebereglerwert geändert:", slider.value);
      * });
      */
     constructor(size, width, height, minValue, maxValue, defaultValue, orientation) {
         super();
+        
+        // Initialisierung der Eigenschaften
         this.size = size;
         this.width = width;
         this.height = height;
@@ -31,26 +30,96 @@ export class ButtonSlider extends createjs.Container {
         this.value = defaultValue;
         this.orientation = orientation || "horizontal";
 
+        // Erstellung der Hintergrund- und Schieber-Objekte
         this.background = new createjs.Shape();
         this.drawBackground("#555555");
 
         this.thumb = new createjs.Shape();
         this.drawThumb("#999999");
 
+        // Container für Hintergrund und Schieber
         this.container = new createjs.Container();
+		
+		
+		// Hinzufügen der Strichklick-Funktionalität
+        this.addStripClickFunctionality();
+		
+		
         this.container.addChild(this.background, this.thumb);
 
-        this.thumb.addEventListener("mouseover", this.onThumbMouseOver.bind(this));
-        this.thumb.addEventListener("mouseout", this.onThumbMouseOut.bind(this));
+        
+
+        // Event-Listener für Schieber-Mausaktionen
         this.thumb.addEventListener("mousedown", this.onThumbMouseDown.bind(this));
         this.thumb.addEventListener("pressmove", this.onThumbPressMove.bind(this));
-		
-		this.addChild(this.container);
-		stage.addChild(this);
-		stage.enableMouseOver();
-		
-		stage.update();
+        this.thumb.addEventListener("mouseover", this.onThumbMouseOver.bind(this));
+        this.thumb.addEventListener("mouseout", this.onThumbMouseOut.bind(this));
+
+        // Hinzufügen des Containers zur Bühne
+        this.addChild(this.container);
+        stage.addChild(this);
+        stage.enableMouseOver();
+        stage.update();
     }
+
+// Methode zur Hinzufügung der Strichklick-Funktionalität
+addStripClickFunctionality() {
+    this.stripClickArea = new createjs.Shape();
+    this.drawStripClickArea();
+
+    this.container.addChild(this.stripClickArea);
+
+    this.stripClickArea.addEventListener("mousedown", function (event) {
+        this.handleStripClick(event);
+    }.bind(this));
+}
+
+drawStripClickArea() {
+    // Vergrößern des Klickbereichs um 20 Pixel an jedem Ende des Reglerstrichs
+    var extendedSize = this.size + 40;
+    if (this.orientation === "horizontal") {
+        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.01)").drawRect(-20, -this.height / 2, extendedSize, this.height);
+    } else if (this.orientation === "vertical") {
+        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.01)").drawRect(-this.width / 2, -20, this.width, extendedSize);
+    }
+    this.stripClickArea.alpha = 0.01; 
+}
+
+// Methode zur Behandlung von Strichklick-Ereignissen
+handleStripClick(event) {
+    var point = this.container.globalToLocal(event.stageX, event.stageY);
+
+    if (this.orientation === "horizontal") {
+        // Überprüfen, ob der Klick innerhalb des tatsächlichen Reglerstrichs liegt
+        if (point.x >= 0 && point.x <= this.size) {
+            var percentage = point.x / this.size;
+            this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
+        } else {
+            // Klick außerhalb des Reglerstrichs - springe zum minimalen oder maximalen Wert
+            if (point.x < 0) {
+                this.setValue(this.minValue);
+            } else {
+                this.setValue(this.maxValue);
+            }
+        }
+    } else if (this.orientation === "vertical") {
+        // Überprüfen, ob der Klick innerhalb des tatsächlichen Reglerstrichs liegt
+        if (point.y >= 0 && point.y <= this.size) {
+            // Korrigiertes Verhalten für die y-Achse
+            var percentage = 1 - (point.y / this.size);
+            this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
+        } else {
+            // Klick außerhalb des Reglerstrichs - springe zum minimalen oder maximalen Wert
+            if (point.y < 0) {
+                this.setValue(this.maxValue);  // Korrigiert für nach unten wachsendes Koordinatensystem
+            } else {
+                this.setValue(this.minValue);  // Korrigiert für nach unten wachsendes Koordinatensystem
+            }
+        }
+    }
+}	
+					
+					
 
     /**
      * Handles the mouse down event on the thumb.
