@@ -78,11 +78,11 @@ drawStripClickArea() {
     // Vergrößern des Klickbereichs um 20 Pixel an jedem Ende des Reglerstrichs
     var extendedSize = this.size + 40;
     if (this.orientation === "horizontal") {
-        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.01)").drawRect(-20, -this.height / 2, extendedSize, this.height);
+        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.1)").drawRect(-20, -this.height / 2, extendedSize, this.height);
     } else if (this.orientation === "vertical") {
-        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.01)").drawRect(-this.width / 2, -20, this.width, extendedSize);
+        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.1)").drawRect(-this.width / 2, -20, this.width, extendedSize);
     }
-    this.stripClickArea.alpha = 0.01; 
+    this.stripClickArea.alpha = 0.1; 
 }
 
 // Methode zur Behandlung von Strichklick-Ereignissen
