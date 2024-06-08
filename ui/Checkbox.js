@@ -94,6 +94,7 @@ export class Checkbox extends createjs.Container {
             // Dispatching the "change" event
             this.dispatchEvent(new createjs.Event("change"));
             console.log("Checkbox state: " + (this.checked ? "checked" : "unchecked"));
+			 this.dispatchEvent(new createjs.Event("change"));
         });
 		
 		this.addChild(this.container);
