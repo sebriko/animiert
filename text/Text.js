@@ -18,14 +18,24 @@ export class Text extends createjs.Container {
         this.styles = styles;
         this.align = align || 'left';
 
-
         this.drawText();
         stage.addChild(this);
     }
+    
+    getMeasuredHeight() {
+        return this.textObj.getMeasuredHeight();
+    }
+
+    /**
+     * Sets new text content and redraws the text.
+     * @param {string} newText The new text content.
+     */
+    setText(newText) {
+        this.text = newText;
+        this.removeAllChildren(); // Remove existing text objects
+        this.drawText(); // Redraw text
 	
-	getMeasuredHeight() {	
-		return this.textObj.getMeasuredHeight();
-	}
+    }
 
     /**
      * Parses the input text and creates text elements with proper subscript and superscript formatting.
@@ -74,9 +84,9 @@ export class Text extends createjs.Container {
 
             // Erstelle ein neues Textobjekt mit den angegebenen Parametern
             this.textObj = new createjs.Text(part, currentStyles, this.color);
-			
-			this.textObj.textAlign = "left";
-			this.textObj.textBaseline = "middle";
+
+            this.textObj.textAlign = "left";
+            this.textObj.textBaseline = "middle";
 
             // Setze den Textausrichtungswert
             this.textObj.textAlign = this.align;
