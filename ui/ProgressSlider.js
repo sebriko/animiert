@@ -25,8 +25,8 @@ export class ProgressSlider extends createjs.Container {
         this.fontSize = fontSize;
         this.orientation = orientation || "horizontal";
 
-        this.background = new createjs.Shape();
-        this.drawBackground("#555555");
+        this.line = new createjs.Shape();
+        this.drawline("#555555");
 
         this.thumb = new createjs.Shape();
         this.drawThumb(0);
@@ -34,7 +34,7 @@ export class ProgressSlider extends createjs.Container {
         this.setValue(defaultValue);
 
         this.container = new createjs.Container();
-        this.container.addChild(this.background, this.thumb);
+        this.container.addChild(this.line, this.thumb);
 
         this.thumb.addEventListener("mouseover", this.handleThumbMouseOver.bind(this));
         this.thumb.addEventListener("mouseout", this.handleThumbMouseOut.bind(this));
@@ -46,22 +46,22 @@ export class ProgressSlider extends createjs.Container {
     }
 
     /**
-     * Draws the background of the slider.
-     * @param {string} fillColor The color of the background fill.
+     * Draws the line of the slider.
+     * @param {string} fillColor The color of the line fill.
      * @private
      */
-    drawBackground(fillColor) {
-        this.background.graphics.clear();
+    drawline(fillColor) {
+        this.line.graphics.clear();
         if (this.orientation === "horizontal") {
-            this.background.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
-            this.background.graphics.moveTo(0, 0);
-            this.background.graphics.lineTo(this.length, 0);
+            this.line.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
+            this.line.graphics.moveTo(0, 0);
+            this.line.graphics.lineTo(this.length, 0);
         } else if (this.orientation === "vertical") {
-            this.background.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
-            this.background.graphics.moveTo(0, 0);
-            this.background.graphics.lineTo(0, this.length);
+            this.line.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
+            this.line.graphics.moveTo(0, 0);
+            this.line.graphics.lineTo(0, this.length);
         }
-        this.background.graphics.endFill();
+        this.line.graphics.endFill();
     }
 
     /**
