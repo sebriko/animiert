@@ -18,7 +18,7 @@ export class ButtonSlider extends createjs.Container {
      *     console.log("Schiebereglerwert geändert:", slider.value);
      * });
      */
-    constructor(size, width, height, minValue, maxValue, defaultValue, orientation) {
+    constructor(size, width, height, minValue, maxValue, defaultValue, orientation, backgroundColor="rgba(255, 255, 255, 1)") {
         super();
         
         // Initialisierung der Eigenschaften
@@ -28,11 +28,12 @@ export class ButtonSlider extends createjs.Container {
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.value = defaultValue;
+		this.backgroundColor = backgroundColor;
         this.orientation = orientation || "horizontal";
 
         // Erstellung der Hintergrund- und Schieber-Objekte
-        this.background = new createjs.Shape();
-        this.drawBackground("#555555");
+        this.line = new createjs.Shape();
+        this.drawline("#555555");
 
         this.thumb = new createjs.Shape();
         this.drawThumb("#999999");
@@ -42,10 +43,10 @@ export class ButtonSlider extends createjs.Container {
 		
 		
 		// Hinzufügen der Strichklick-Funktionalität
-        this.addStripClickFunctionality();
+        this.drawBackground();
 		
 		
-        this.container.addChild(this.background, this.thumb);
+        this.container.addChild(this.line, this.thumb);
 
         
 
@@ -63,7 +64,7 @@ export class ButtonSlider extends createjs.Container {
     }
 
 // Methode zur Hinzufügung der Strichklick-Funktionalität
-addStripClickFunctionality() {
+drawBackground() {
     this.stripClickArea = new createjs.Shape();
     this.drawStripClickArea();
 
@@ -78,11 +79,11 @@ drawStripClickArea() {
     // Vergrößern des Klickbereichs um 20 Pixel an jedem Ende des Reglerstrichs
     var extendedSize = this.size + 40;
     if (this.orientation === "horizontal") {
-        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.1)").drawRect(-20, -this.height / 2, extendedSize, this.height);
+        this.stripClickArea.graphics.clear().beginFill(this.backgroundColor).drawRect(-20, -this.height / 2, extendedSize, this.height);
     } else if (this.orientation === "vertical") {
-        this.stripClickArea.graphics.clear().beginFill("rgba(0, 0, 0, 0.1)").drawRect(-this.width / 2, -20, this.width, extendedSize);
+        this.stripClickArea.graphics.clear().beginFill(this.backgroundColor).drawRect(-this.width / 2, -20, this.width, extendedSize);
     }
-    this.stripClickArea.alpha = 0.1; 
+    //this.stripClickArea.alpha = 0.1; 
 }
 
 // Methode zur Behandlung von Strichklick-Ereignissen
@@ -243,34 +244,34 @@ handleStripClick(event) {
     }
 
     /**
-     * Draws the background of the slider.
-     * @param {string} fillColor The color of the background fill.
+     * Draws the line of the slider.
+     * @param {string} fillColor The color of the line fill.
      * @private
      */
-    drawBackground(fillColor) {
+    drawline(fillColor) {
         if (this.orientation === "vertical") {
-            this.drawBackgroundVertical(fillColor);
+            this.drawlineVertical(fillColor);
         } else {
-            this.drawBackgroundHorizontal(fillColor);
+            this.drawlineHorizontal(fillColor);
         }
     }
 
     /**
-     * Draws the horizontal background of the slider.
-     * @param {string} fillColor The color of the background fill.
+     * Draws the horizontal line of the slider.
+     * @param {string} fillColor The color of the line fill.
      * @private
      */
-    drawBackgroundHorizontal(fillColor) {
-        this.background.graphics.clear().beginFill(fillColor).drawRect(0,0, this.size, 1).endFill();
+    drawlineHorizontal(fillColor) {
+        this.line.graphics.clear().beginFill(fillColor).drawRect(0,0, this.size, 1).endFill();
     }
 
     /**
-     * Draws the vertical background of the slider.
-     * @param {string} fillColor The color of the background fill.
+     * Draws the vertical line of the slider.
+     * @param {string} fillColor The color of the line fill.
      * @private
      */
-    drawBackgroundVertical(fillColor) {
-        this.background.graphics.clear().beginFill(fillColor).drawRect(0,0, 1, this.size).endFill();
+    drawlineVertical(fillColor) {
+        this.line.graphics.clear().beginFill(fillColor).drawRect(0,0, 1, this.size).endFill();
     }
 
     /**

@@ -1,5 +1,5 @@
 export class NumericStepper extends createjs.Container {
-    constructor(numericValue, styles, color, width, stepValue = 1, maxLength = Infinity) {
+    constructor(numericValue, styles, color, width, stepValue = 1, maxLength = Infinity, minValue = -Infinity, maxValue = Infinity) {
         super();
 
         this.numericValue = numericValue;
@@ -8,6 +8,8 @@ export class NumericStepper extends createjs.Container {
         this.styles = styles;
         this.padding = 9;
         this.maxLength = maxLength;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         this.cursorIndex = String(numericValue).length;
         this.decimalPlaces = 0;
         this.shiftPressed = false;
@@ -199,18 +201,18 @@ console.log("Selection")
         button.graphics.beginFill(fillColor);
         const midX = width / 2;
         let baseY = 0;
-        const triangleHeight = 6;
+        const triangleHeight = 4;
 
         if (isUpArrow) {
-			baseY = this.padding/4;
+			baseY = this.padding/3;
             button.graphics.moveTo(midX, baseY);
-            button.graphics.lineTo(midX - 4, baseY+triangleHeight);
-            button.graphics.lineTo(midX + 4, baseY+triangleHeight);
+            button.graphics.lineTo(midX - 3, baseY+triangleHeight);
+            button.graphics.lineTo(midX + 3, baseY+triangleHeight);
         } else {
-			baseY = height - this.padding/4;
+			baseY = height - this.padding/3;
             button.graphics.moveTo(midX, baseY);
-            button.graphics.lineTo(midX + 4, baseY - triangleHeight);
-            button.graphics.lineTo(midX - 4, baseY - triangleHeight);
+            button.graphics.lineTo(midX + 3, baseY - triangleHeight);
+            button.graphics.lineTo(midX - 3, baseY - triangleHeight);
         }
         button.graphics.closePath();
     }
@@ -279,8 +281,7 @@ console.log("Selection")
     }
 
     increaseValue() {
-		this.numericValue = parseFloat(this.textObj.text);
-        this.numericValue += this.stepValue;
+        this.numericValue = Math.min(parseFloat(this.textObj.text) + this.stepValue, this.maxValue);
         this.textObj.text = String(this.numericValue);
         this.updateCursor();
         stage.update();
@@ -288,8 +289,7 @@ console.log("Selection")
     }
 
     decreaseValue() {
-		this.numericValue = parseFloat(this.textObj.text);
-        this.numericValue -= this.stepValue;
+        this.numericValue = Math.max(parseFloat(this.textObj.text) - this.stepValue, this.minValue);
         this.textObj.text = String(this.numericValue);
         this.updateCursor();
         stage.update();
@@ -313,7 +313,7 @@ console.log("Selection")
         return tempText.getMeasuredWidth();
     }
 
-	getCursorIndexFromX(x) {
+    getCursorIndexFromX(x) {
         const charWidths = [];
         for (let i = 0; i < this.textObj.text.length; i++) {
             charWidths[i] = this.getWidthUpToIndex(i + 1);
