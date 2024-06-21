@@ -12,6 +12,7 @@ export class Button extends createjs.Container {
         this.fontSize = fontSize;
         this.active = false;
         this.toggleMode = false;
+		this.borderRadius = 10;
 
         stage.enableMouseOver(500);
 
@@ -90,6 +91,12 @@ export class Button extends createjs.Container {
         this.label.lineHeight = fontSize + 4;
     }
 
+    setBorderRadius(borderRadius) {
+        this.borderRadius = borderRadius;
+		this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
+    }
+
+
     setToggleMode(toggleMode, active) {
         this.toggleMode = toggleMode;
         this.active = active || false;
@@ -107,7 +114,7 @@ export class Button extends createjs.Container {
         this.background.graphics.clear();
         this.background.graphics.setStrokeStyle(0.5).beginStroke(strokeColor);
         this.background.graphics.beginLinearGradientFill(fillColors, [0, 1], 0, 0, 0, this.height);
-        this.background.graphics.drawRoundRect(0, 0, this.width, this.height, 10);
+        this.background.graphics.drawRoundRect(0, 0, this.width, this.height, this.borderRadius);
         this.background.graphics.endFill();
     }
 }
