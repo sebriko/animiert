@@ -123,6 +123,9 @@ export class ProgressSlider extends createjs.Container {
         } else if (this.orientation === "vertical") {
             this.thumb.y = this.getThumbPositionY();
         }
+		
+		this.dispatchChangeEvent();
+		stage.update();
     }
 
     /**
@@ -192,7 +195,10 @@ export class ProgressSlider extends createjs.Container {
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         }
 
-        currentAngle = percentage * 720;
         stage.update();
     }
+	
+		dispatchChangeEvent() {
+    this.dispatchEvent("change");
+}
 }
