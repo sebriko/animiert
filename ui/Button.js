@@ -1,10 +1,10 @@
 import { Text } from '../text/Text.js';
 
 export class Button extends createjs.Container {
-  
+
     constructor(text, width, height, font, fontSize) {
         super();
-        
+
         this.text = text;
         this.width = width;
         this.height = height;
@@ -12,14 +12,14 @@ export class Button extends createjs.Container {
         this.fontSize = fontSize;
         this.active = false;
         this.toggleMode = false;
-		this.borderRadius = 10;
+        this.borderRadii = { tl: 10, tr: 10, br: 10, bl: 10 };
 
         stage.enableMouseOver(500);
 
         this.background = new createjs.Shape();
         this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
-		
-		console.log(fontSize)
+
+        console.log(fontSize)
 
         this.label = new createjs.Text(text, fontSize + "px " + font, "#000000");
         this.label.textAlign = "center";
@@ -91,11 +91,10 @@ export class Button extends createjs.Container {
         this.label.lineHeight = fontSize + 4;
     }
 
-    setBorderRadius(borderRadius) {
-        this.borderRadius = borderRadius;
-		this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
+    setBorderRadii(tl, tr, br, bl) {
+        this.borderRadii = { tl, tr, br, bl };
+        this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
     }
-
 
     setToggleMode(toggleMode, active) {
         this.toggleMode = toggleMode;
@@ -114,7 +113,8 @@ export class Button extends createjs.Container {
         this.background.graphics.clear();
         this.background.graphics.setStrokeStyle(0.5).beginStroke(strokeColor);
         this.background.graphics.beginLinearGradientFill(fillColors, [0, 1], 0, 0, 0, this.height);
-        this.background.graphics.drawRoundRect(0, 0, this.width, this.height, this.borderRadius);
+        this.background.graphics.drawRoundRectComplex(0, 0, this.width, this.height, 
+          this.borderRadii.tl, this.borderRadii.tr, this.borderRadii.br, this.borderRadii.bl);
         this.background.graphics.endFill();
     }
 }

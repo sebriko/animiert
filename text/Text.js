@@ -9,16 +9,15 @@ export class Text extends createjs.Container {
      * @param {string} styles The text styles.
      * @param {string} color The text color.
      * @param {string} [align='left'] The text alignment.
-     * @param {string} [bgColor=null] The background color.
      */
-    constructor(text, styles, color, align, bgColor) {
+    constructor(text, styles, color, align) {
         super();
 
         this.text = text;
         this.color = color;
         this.styles = styles;
         this.align = align || 'left';
-        this.bgColor = bgColor || null;
+
 
         this.drawText();
         stage.addChild(this);
@@ -136,15 +135,6 @@ export class Text extends createjs.Container {
 
             // Füge das Textobjekt zur Containerklasse hinzu
             this.addChild(this.textObj);
-
-            // Erstelle ein Rechteck hinter dem Text, falls eine Hintergrundfarbe definiert ist
-            if (this.bgColor) {
-                const bg = new createjs.Shape();
-                bg.graphics.beginFill(this.bgColor).drawRect(0, 0, this.textObj.getMeasuredWidth(), this.textObj.getMeasuredHeight());
-                bg.x = this.textObj.x - (this.align === "center" ? this.textObj.getMeasuredWidth() / 2 : 0);
-                bg.y = this.textObj.y - this.textObj.getMeasuredHeight() / 2;
-                this.addChildAt(bg, 0); // Füge das Rechteck hinter dem Text hinzu
-            }
 
             // Aktualisiere die aktuelle x-Position für das nächste Textobjekt
             currentX += this.textObj.getMeasuredWidth();
