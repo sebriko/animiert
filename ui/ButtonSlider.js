@@ -31,8 +31,10 @@ export class ButtonSlider extends createjs.Container {
 		this.backgroundColor = backgroundColor;
         this.orientation = orientation || "horizontal";
 
-        // Erstellung der Hintergrund- und Schieber-Objekte
         this.line = new createjs.Shape();
+		
+		this.backgroundMark = new createjs.Shape(); 
+		
         this.drawline("#555555");
 
         this.thumb = new createjs.Shape();
@@ -45,9 +47,7 @@ export class ButtonSlider extends createjs.Container {
 		// Hinzufügen der Strichklick-Funktionalität
         this.drawBackground();
 		
-		
-        this.container.addChild(this.line, this.thumb);
-
+		this.container.addChild(this.backgroundMark, this.line, this.thumb);
         
 
         // Event-Listener für Schieber-Mausaktionen
@@ -289,6 +289,36 @@ handleStripClick(event) {
 		 this.dispatchChangeEvent();
 		 stage.update();
     }
+	
+    /**
+     * Sets a marking on the slider.
+     * The marking is displayed as a colored rectangle covering the area between `beginMark` and `endMark`.
+     *
+     * @param {number} beginMark The starting point of the marking (in pixels relative to the slider axis).
+     * @param {number} endMark The endpoint of the marking (in pixels relative to the slider axis).
+     * @param {string} markColor The color of the marking (e.g., "#FF0000" for red).
+     *
+     * @example
+     * slider.setMarking(20, 80, "#FF0000"); // Sets a red marking from position 20 to 80
+     */
+	setMarking(beginMark, endMark, markColor) {
+		this.beginMark = beginMark;
+		this.endMark = endMark;
+		this.markColor = markColor;
+
+		this.backgroundMark.graphics.clear();
+		this.backgroundMark.graphics.beginFill(this.markColor);
+
+		if (this.orientation === "horizontal") {
+			this.backgroundMark.graphics.drawRect(this.beginMark, -15, this.endMark - this.beginMark, 30);
+		} else {
+			this.backgroundMark.graphics.drawRect(-15, this.beginMark, 30, this.endMark - this.beginMark);
+		}
+		
+		this.backgroundMark.graphics.endFill();
+
+	};
+	
 	
 	dispatchChangeEvent() {
     this.dispatchEvent("change");
