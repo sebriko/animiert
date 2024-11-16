@@ -41,6 +41,9 @@ export class NumericStepper extends createjs.Container {
         this.addMouseListeners();
 
         stage.addChild(this);
+		
+		stage.enableMouseOver();
+        stage.update();
 
         const self = this;
 

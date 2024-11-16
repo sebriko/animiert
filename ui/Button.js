@@ -14,12 +14,8 @@ export class Button extends createjs.Container {
         this.toggleMode = false;
         this.borderRadii = { tl: 10, tr: 10, br: 10, bl: 10 };
 
-        stage.enableMouseOver(500);
-
         this.background = new createjs.Shape();
         this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
-
-        console.log(fontSize)
 
         this.label = new createjs.Text(text, fontSize + "px " + font, "#000000");
         this.label.textAlign = "center";
@@ -60,6 +56,8 @@ export class Button extends createjs.Container {
 
         this.addChild(this.container);
         stage.addChild(this);
+		
+		stage.enableMouseOver();
         stage.update();
     }
 

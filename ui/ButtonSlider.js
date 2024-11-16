@@ -21,7 +21,6 @@ export class ButtonSlider extends createjs.Container {
     constructor(size, width, height, minValue, maxValue, defaultValue, orientation, backgroundColor="rgba(255, 255, 255, 1)") {
         super();
         
-        // Initialisierung der Eigenschaften
         this.size = size;
         this.width = width;
         this.height = height;
@@ -32,38 +31,28 @@ export class ButtonSlider extends createjs.Container {
         this.orientation = orientation || "horizontal";
 
         this.line = new createjs.Shape();
-		
-		this.backgroundMark = new createjs.Shape(); 
-		
         this.drawline("#555555");
 
         this.thumb = new createjs.Shape();
         this.drawThumb("#999999");
 
-        // Container für Hintergrund und Schieber
         this.container = new createjs.Container();
-		
-		
-		// Hinzufügen der Strichklick-Funktionalität
+
         this.drawBackground();
 		
-		this.container.addChild(this.backgroundMark, this.line, this.thumb);
-        
+        this.container.addChild(this.line, this.thumb);
 
-        // Event-Listener für Schieber-Mausaktionen
         this.thumb.addEventListener("mousedown", this.onThumbMouseDown.bind(this));
         this.thumb.addEventListener("pressmove", this.onThumbPressMove.bind(this));
         this.thumb.addEventListener("mouseover", this.onThumbMouseOver.bind(this));
         this.thumb.addEventListener("mouseout", this.onThumbMouseOut.bind(this));
 
-        // Hinzufügen des Containers zur Bühne
         this.addChild(this.container);
         stage.addChild(this);
         stage.enableMouseOver();
         stage.update();
     }
 
-// Methode zur Hinzufügung der Strichklick-Funktionalität
 drawBackground() {
     this.stripClickArea = new createjs.Shape();
     this.drawStripClickArea();
@@ -289,36 +278,6 @@ handleStripClick(event) {
 		 this.dispatchChangeEvent();
 		 stage.update();
     }
-	
-    /**
-     * Sets a marking on the slider.
-     * The marking is displayed as a colored rectangle covering the area between `beginMark` and `endMark`.
-     *
-     * @param {number} beginMark The starting point of the marking (in pixels relative to the slider axis).
-     * @param {number} endMark The endpoint of the marking (in pixels relative to the slider axis).
-     * @param {string} markColor The color of the marking (e.g., "#FF0000" for red).
-     *
-     * @example
-     * slider.setMarking(20, 80, "#FF0000"); // Sets a red marking from position 20 to 80
-     */
-	setMarking(beginMark, endMark, markColor) {
-		this.beginMark = beginMark;
-		this.endMark = endMark;
-		this.markColor = markColor;
-
-		this.backgroundMark.graphics.clear();
-		this.backgroundMark.graphics.beginFill(this.markColor);
-
-		if (this.orientation === "horizontal") {
-			this.backgroundMark.graphics.drawRect(this.beginMark, -15, this.endMark - this.beginMark, 30);
-		} else {
-			this.backgroundMark.graphics.drawRect(-15, this.beginMark, 30, this.endMark - this.beginMark);
-		}
-		
-		this.backgroundMark.graphics.endFill();
-
-	};
-	
 	
 	dispatchChangeEvent() {
     this.dispatchEvent("change");
