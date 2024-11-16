@@ -23,14 +23,14 @@ export class Button extends createjs.Container {
         this.label.x = this.width / 2;
         this.label.y = this.height / 2;
 
-        this.button = new createjs.Shape();
-        this.button.addChild(this.background, this.label);
+        this.container = new createjs.Container();
+        this.container.addChild(this.background, this.label);
 
-        this.button.addEventListener("mouseover", () => {
+        this.addEventListener("mouseover", () => {
             this.drawBackground("#228B22", ["#FFFFFF", "#EFEFEF"]);
         });
 
-        this.button.addEventListener("mouseout", () => {
+        this.addEventListener("mouseout", () => {
             if (!this.toggleMode) {
                 this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
             }
@@ -42,7 +42,7 @@ export class Button extends createjs.Container {
             }
         });
 
-        this.button.addEventListener("click", () => {
+        this.addEventListener("click", () => {
             if (this.toggleMode) {
                 this.active = !this.active;
                 if (this.active) {
@@ -51,10 +51,9 @@ export class Button extends createjs.Container {
                     this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
                 }
             }
-            console.log("Button Zustand: " + (this.active ? "geklickt" : "nicht geklickt"));
         });
 
-        this.addChild(this.button);
+        this.addChild(this.container);
         stage.addChild(this);
 		
 		stage.enableMouseOver();
