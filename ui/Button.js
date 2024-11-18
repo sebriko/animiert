@@ -27,10 +27,12 @@ export class Button extends createjs.Container {
         this.container.addChild(this.background, this.label);
 
         this.addEventListener("mouseover", () => {
+			console.log("test2")
             this.drawBackground("#228B22", ["#FFFFFF", "#EFEFEF"]);
         });
 
         this.addEventListener("mouseout", () => {
+			console.log("test3")
             if (!this.toggleMode) {
                 this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
             }
@@ -43,6 +45,7 @@ export class Button extends createjs.Container {
         });
 
         this.addEventListener("click", () => {
+			console.log("test1")
             if (this.toggleMode) {
                 this.active = !this.active;
                 if (this.active) {
