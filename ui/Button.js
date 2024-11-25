@@ -114,7 +114,8 @@ export class Button extends createjs.Container {
         this.background.graphics.setStrokeStyle(0.5).beginStroke(strokeColor);
         this.background.graphics.beginLinearGradientFill(fillColors, [0, 1], 0, 0, 0, this.height);
         this.background.graphics.drawRoundRectComplex(0, 0, this.width, this.height, 
-          this.borderRadii.tl, this.borderRadii.tr, this.borderRadii.br, this.borderRadii.bl);
+        this.borderRadii.tl, this.borderRadii.tr, this.borderRadii.br, this.borderRadii.bl);
         this.background.graphics.endFill();
+		stage.update();
     }
 }
