@@ -136,8 +136,8 @@ export class RadioButton extends createjs.Container {
             this.updateRadioButton();
 
             this.dispatchEvent(new createjs.Event("change"));
-			console.log("event")
         }
+		stage.update();
     }
 
     /**
