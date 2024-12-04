@@ -27,7 +27,6 @@ export class Button extends createjs.Container {
         this.container.addChild(this.background, this.label);
 
         this.addEventListener("mouseover", () => {
-			console.log("test2")
             this.drawBackground("#228B22", ["#FFFFFF", "#EFEFEF"]);
         });
 
@@ -43,18 +42,23 @@ export class Button extends createjs.Container {
                 this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
             }
         });
+		
+		this.addEventListener("click", () => {
+		if (this.toggleMode) {
+			this.active = !this.active;
+			if (this.active) {
+				this.drawBackground("#228B22", ["#FFFFFF", "#EFEFEF"]);
+			} else {
+				this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
+			}
+		} else {
+			this.drawBackground("#DDDDDD", ["#FFFFFF", "#EFEFEF"]);
+			setTimeout(() => {
+				this.drawBackground("#228B22", ["#FFFFFF", "#EFEFEF"]);
+			}, 100); 
+		}
+	});
 
-        this.addEventListener("click", () => {
-			console.log("test1")
-            if (this.toggleMode) {
-                this.active = !this.active;
-                if (this.active) {
-                    this.drawBackground("#228B22", ["#FFFFFF", "#EFEFEF"]);
-                } else {
-                    this.drawBackground("#AAAAAA", ["#FAFAFA", "#EFEFEF"]);
-                }
-            }
-        });
 
         this.addChild(this.container);
         stage.addChild(this);
