@@ -5,7 +5,7 @@
 export class ProgressSlider extends createjs.Container {
     /**
      * Creates an instance of ProgressSlider.
-     * @param {number} length The length of the slider.
+     * @param {number} size The size of the slider.
      * @param {number} buttonSize The size of the slider button.
      * @param {number} minValue The minimum value of the slider.
      * @param {number} maxValue The maximum value of the slider.
@@ -14,9 +14,9 @@ export class ProgressSlider extends createjs.Container {
      * @param {number} fontSize The font size of the slider.
      * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
      */
-    constructor(length, buttonSize, minValue, maxValue, defaultValue, font, fontSize, orientation) {
+    constructor(size, buttonSize, minValue, maxValue, defaultValue, font, fontSize, orientation) {
         super();
-        this.length = length;
+        this.size = size;
         this.buttonSize = buttonSize;
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -53,13 +53,9 @@ export class ProgressSlider extends createjs.Container {
     drawline(fillColor) {
         this.line.graphics.clear();
         if (this.orientation === "horizontal") {
-            this.line.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
-            this.line.graphics.moveTo(0, 0);
-            this.line.graphics.lineTo(this.length, 0);
+			this.line.graphics.clear().beginFill(fillColor).drawRect(0,0, this.size, 1).endFill();
         } else if (this.orientation === "vertical") {
-            this.line.graphics.setStrokeStyle(0.5, "round").beginStroke(fillColor);
-            this.line.graphics.moveTo(0, 0);
-            this.line.graphics.lineTo(0, this.length);
+			this.line.graphics.clear().beginFill(fillColor).drawRect(0,0, 1, this.size).endFill();
         }
         this.line.graphics.endFill();
     }
@@ -135,7 +131,7 @@ export class ProgressSlider extends createjs.Container {
      */
     getThumbPositionX() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
-        return percentage * (this.length);
+        return percentage * (this.size);
     }
 
     /**
@@ -145,7 +141,7 @@ export class ProgressSlider extends createjs.Container {
      */
     getThumbPositionY() {
         const percentage = (this.value - this.minValue) / (this.maxValue - this.minValue);
-        return percentage * (this.length);
+        return percentage * (this.size);
     }
 
     /**
@@ -185,13 +181,13 @@ export class ProgressSlider extends createjs.Container {
 
         if (this.orientation === "horizontal") {
             newX = point.x + this.offset.x;
-            newX = Math.max(0, Math.min(newX, this.length));
-            percentage = newX / this.length;
+            newX = Math.max(0, Math.min(newX, this.size));
+            percentage = newX / this.size;
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         } else if (this.orientation === "vertical") {
             newY = point.y + this.offset.y;
-            newY = Math.max(0, Math.min(newY, this.length));
-            percentage = newY / this.length;
+            newY = Math.max(0, Math.min(newY, this.size));
+            percentage = newY / this.size;
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         }
 
