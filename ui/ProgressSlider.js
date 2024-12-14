@@ -65,49 +65,65 @@ export class ProgressSlider extends createjs.Container {
      * @param {number} state The state of the thumb (0 for normal, 1 for hover).
      * @private
      */
-	drawThumb(state) {
-		this.thumb.graphics.clear();
-		if (state === 0) {
-			this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#AAAAAA");
-			this.thumb.graphics.beginLinearGradientFill(["#EFEFEF ", "#DDDDDD"], [0, 1], 0, 0, 0, this.buttonSize);
-		} else if (state === 1) {
-			this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
-			this.thumb.graphics.beginLinearGradientFill(["#EFEFEF", "#EEEEEE"], [0, 1], 0, 0, 0, this.buttonSize);
+    drawThumb(state) {
+        this.thumb.graphics.clear();
+		
+		const halfSize = this.buttonSize / 1.5;
+        const fullSize = this.buttonSize;
+		
+		
+		if (this.orientation === "vertical") {
+        if (state === 0) {
+            this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#AAAAAA");
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, -halfSize, 0, halfSize);
+        } else if (state === 1) {
+            this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, -halfSize, 0, halfSize);
+        }
 		}
-
-		const radius = this.buttonSize / 2;
-		const triangleSize = this.buttonSize;
-		let x1, y1, x2, y2, x3, y3;
-
+		
 		if (this.orientation === "horizontal") {
-			x1 = radius - 7.5;
-			y1 = 0;
-			x2 = -7.5;
-			y2 = triangleSize;
-			x3 = triangleSize - 7.5;
-			y3 = triangleSize;
-		} else if (this.orientation === "vertical") {
-			x1 = 0;
-			y1 = radius - 7.5;
-			x2 = -triangleSize;
-			y2 = -7.5;
-			x3 = -triangleSize;
-			y3 = radius * 2 - 7.5;
+        if (state === 0) {
+            this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#AAAAAA");
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, fullSize);
+        } else if (state === 1) {
+            this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, fullSize);
+        }
 		}
 
-		// Abrundung der Ecken hinzufügen
-		this.thumb.graphics.moveTo(x1, y1);
-		this.thumb.graphics.arcTo(x1 + 10, y1, x2, y2, 5);  // Abrundung
-		this.thumb.graphics.arcTo(x2 + 10, y2, x3, y3, 5);  // Abrundung
-		this.thumb.graphics.arcTo(x3 + 10, y3, x1, y1, 5);  // Abrundung
+        let x1, y1, x2, y2, x3, y3;
 
-		this.thumb.graphics.endFill();
-		this.thumb.setBounds(0, 0, triangleSize, triangleSize);
-		this.thumb.x = (this.orientation === "horizontal") ? this.getThumbPositionX() : 0;
-		this.thumb.y = (this.orientation === "vertical") ? this.getThumbPositionY() : 0;
+        if (this.orientation === "horizontal") {
+            x1 = 0;
+            y1 = 0;
+            x2 = -halfSize;
+            y2 = fullSize;
+            x3 = halfSize;
+            y3 = fullSize;
+        } else if (this.orientation === "vertical") {
+            x1 = 0;
+            y1 = 0;
+            x2 = fullSize;
+            y2 = -halfSize;
+            x3 = fullSize;
+            y3 = halfSize;
+        }
+		
+		const radius = 2; // Radius der Abrundung
+
+		this.thumb.graphics.moveTo(x1, y1);
+        this.thumb.graphics.arcTo(x2, y2, x3, y3, 2);
+        this.thumb.graphics.arcTo(x3, y3, x1, y1, 2);
+		this.thumb.graphics.lineTo(x1, y1);
+
+        this.thumb.graphics.endFill();
+        this.thumb.setBounds(0, 0, fullSize, fullSize);
+        this.thumb.x = (this.orientation === "horizontal") ? this.getThumbPositionX() : 0;
+        this.thumb.y = (this.orientation === "vertical") ? this.getThumbPositionY() : 0;
 		
 		stage.update();
-	}
+    }
 
     /**
      * Sets the value of the slider.
