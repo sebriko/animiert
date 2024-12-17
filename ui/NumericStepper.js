@@ -2,6 +2,8 @@ export class NumericStepper extends createjs.Container {
     constructor(numericValue, styles, color, width, stepValue = 1, maxLength = Infinity, minValue = -Infinity, maxValue = Infinity) {
         super();
 
+        const self = this;
+		
         this.numericValue = numericValue;
         this.color = color;
         this.width = width;
@@ -37,15 +39,15 @@ export class NumericStepper extends createjs.Container {
         this.addChild(this.decreaseButton);
 
         this.addButtons();
-        this.addButtonListeners();
-        this.addMouseListeners();
+        this.addButtonListeners(this);
+        this.addMouseListeners(this);
 
         stage.addChild(this);
 		
 		stage.enableMouseOver();
         stage.update();
 
-        const self = this;
+
 
         document.addEventListener("keydown", function(event) {
             self.shiftPressed = event.shiftKey;
@@ -137,7 +139,7 @@ export class NumericStepper extends createjs.Container {
         this.backgroundRect = new createjs.Shape();
         this.backgroundRect.graphics.setStrokeStyle(0.5);
         this.backgroundRect.graphics.beginStroke("#CCCCCC");
-        this.backgroundRect.graphics.beginFill("#FFFFFF"); // Weiße Füllfarbe hinzufügen
+        this.backgroundRect.graphics.beginFill("#FFFFFF"); 
         this.backgroundRect.graphics.drawRect(-this.padding / 2, -this.padding / 2, this.width, this.textObj.getMeasuredHeight() + this.padding);
         this.addChild(this.backgroundRect);
     }
@@ -174,7 +176,7 @@ export class NumericStepper extends createjs.Container {
             this.whiteText = new createjs.Text(selectedText, this.styles, "#FFFFFF");
             this.whiteText.x = startX;
             this.whiteText.y = 0;
-console.log("Selection")
+
             this.addChild(this.whiteText);
         }
     }
@@ -220,8 +222,7 @@ console.log("Selection")
         button.graphics.closePath();
     }
 
-    addButtonListeners() {
-        const self = this;
+    addButtonListeners(self) {
 
         self.increaseButton.addEventListener("click", function() {
             self.increaseValue();
@@ -233,6 +234,7 @@ console.log("Selection")
 
         self.increaseButton.addEventListener("mouseover", function() {
             self.onButtonMouseOver(self.increaseButton);
+			document.body.style.cursor = "default";
         });
 
         self.increaseButton.addEventListener("mouseout", function() {
@@ -241,6 +243,7 @@ console.log("Selection")
 
         self.decreaseButton.addEventListener("mouseover", function() {
             self.onButtonMouseOver(self.decreaseButton);
+			document.body.style.cursor = "default";
         });
 
         self.decreaseButton.addEventListener("mouseout", function() {
@@ -248,9 +251,8 @@ console.log("Selection")
         });
     }
 
-    addMouseListeners() {
-        const self = this;
-
+    addMouseListeners(self) {
+        
         this.addEventListener("click", function(event) {
             const localPoint = self.globalToLocal(event.stageX, event.stageY);
             self.cursorIndex = self.getCursorIndexFromX(localPoint.x);
@@ -261,10 +263,10 @@ console.log("Selection")
         this.addEventListener("mousedown", function(event) {
             const localPoint = self.globalToLocal(event.stageX, event.stageY);
 	
-    const buttonX = self.increaseButton.x; 
-    if (localPoint.x < buttonX) {
-        self.selectionStart = self.getCursorIndexFromX(localPoint.x);
-    }
+		const buttonX = self.increaseButton.x; 
+		if (localPoint.x < buttonX) {
+			self.selectionStart = self.getCursorIndexFromX(localPoint.x);
+		}
 			
         });
 
@@ -281,6 +283,28 @@ console.log("Selection")
             self.updateSelectionRect();
             stage.update();
         });
+		
+		this.backgroundRect.addEventListener("mouseover", function() {
+			document.body.style.cursor = "text";
+		});
+
+		this.selectionRect.addEventListener("mouseover", function() {
+			document.body.style.cursor = "text";
+		});
+
+		this.textObj.addEventListener("mouseover", function() {
+			document.body.style.cursor = "text";
+		});
+
+		this.whiteText.addEventListener("mouseover", function() {
+			document.body.style.cursor = "text";
+		});
+		
+		self.addEventListener("mouseout", function() {
+			document.body.style.cursor = "default";
+			console.log("sfsd")
+		});
+		
     }
 
     increaseValue() {
