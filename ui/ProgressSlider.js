@@ -75,20 +75,20 @@ export class ProgressSlider extends createjs.Container {
 		if (this.orientation === "vertical") {
         if (state === 0) {
             this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#AAAAAA");
-            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, -halfSize, 0, halfSize);
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, -halfSize, 0, halfSize+25);
         } else if (state === 1) {
             this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
-            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, -halfSize, 0, halfSize);
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, -halfSize, 0, halfSize+25);
         }
 		}
 		
 		if (this.orientation === "horizontal") {
         if (state === 0) {
             this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#AAAAAA");
-            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, fullSize);
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, fullSize+15);
         } else if (state === 1) {
             this.thumb.graphics.setStrokeStyle(0.5).beginStroke("#228B22");
-            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, fullSize);
+            this.thumb.graphics.beginLinearGradientFill(["rgba(250, 250, 250, 0.5)", "rgba(204, 204, 204, 0.3)"], [0, 1], 0, 0, 0, fullSize+15);
         }
 		}
 
