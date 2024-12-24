@@ -82,8 +82,6 @@ export class SplineCurve extends createjs.Container {
                 const controlY = (this.points[i].y + this.points[i + 1].y) / 2;
                 graphics.quadraticCurveTo(this.points[i].x, this.points[i].y, controlX, controlY);
             }
-            const lastPoint = this.points[this.points.length - 1];
-            graphics.lineTo(lastPoint.x, lastPoint.y);
         }
 
         graphics.endStroke();
