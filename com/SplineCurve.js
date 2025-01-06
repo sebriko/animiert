@@ -66,51 +66,100 @@ export class SplineCurve extends createjs.Container {
     /**
      * Draws the Spline curve based on the current points.
      */
-    drawCurve() {
-        const graphics = this.curveShape.graphics;
-        graphics.clear();
+	drawCurve() {
+		const graphics = this.curveShape.graphics;
+		graphics.clear();
 
-        // Set color and thickness of the curve
-        graphics.beginStroke(this.color);
-        graphics.setStrokeStyle(this.thickness);
+		graphics.beginStroke(this.color);
+		graphics.setStrokeStyle(this.thickness);
 
-        // Draw the curve using quadraticCurveTo for each pair of points
-        if (this.points.length > 1) {
-            graphics.moveTo(this.points[0].x, this.points[0].y);
-            for (let i = 1; i < this.points.length - 1; i++) {
-                const controlX = (this.points[i].x + this.points[i + 1].x) / 2;
-                const controlY = (this.points[i].y + this.points[i + 1].y) / 2;
-                graphics.quadraticCurveTo(this.points[i].x, this.points[i].y, controlX, controlY);
+		if (this.points.length > 1) {
+			graphics.moveTo(this.points[0].x, this.points[0].y);
+
+			for (let i = 0; i < this.points.length - 1; i++) {
+				const p0 = this.points[i === 0 ? i : i - 1]; 
+				const p1 = this.points[i];                  
+				const p2 = this.points[i + 1];              
+				const p3 = this.points[i + 2] || p2;       
+
+				const controlX1 = p1.x + (p2.x - p0.x) / 6;
+				const controlY1 = p1.y + (p2.y - p0.y) / 6;
+
+				const controlX2 = p2.x - (p3.x - p1.x) / 6;
+				const controlY2 = p2.y - (p3.y - p1.y) / 6;
+
+				graphics.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, p2.x, p2.y);
+			}
+		}
+
+		graphics.endStroke();
+	}
+
+
+
+/**
+ * Returns the y-coordinate for a given x-coordinate on the curve.
+ * @param {number} x - The x-coordinate to query.
+ * @returns {number} - The y-coordinate at the given x-coordinate, or null if x is outside the curve.
+ */
+getY(x) {
+    if (this.points.length < 2) return null;
+
+    for (let i = 0; i < this.points.length - 1; i++) {
+        const p0 = this.points[i === 0 ? i : i - 1];
+        const p1 = this.points[i];
+        const p2 = this.points[i + 1];
+        const p3 = this.points[i + 2] || p2;
+
+        // Kontrollpunkte für diesen Abschnitt berechnen
+        const controlX1 = p1.x + (p2.x - p0.x) / 6;
+        const controlY1 = p1.y + (p2.y - p0.y) / 6;
+
+        const controlX2 = p2.x - (p3.x - p1.x) / 6;
+        const controlY2 = p2.y - (p3.y - p1.y) / 6;
+
+        // Prüfen, ob x in diesem Abschnitt liegt
+        if (p1.x <= x && x <= p2.x) {
+            // Parameter t iterativ bestimmen
+            let t = 0.5; // Startwert
+            const tolerance = 0.0001; // Genauigkeit
+            let lower = 0, upper = 1;
+
+            while (upper - lower > tolerance) {
+                const curveX = this._bezierPoint(t, p1.x, controlX1, controlX2, p2.x);
+                if (curveX < x) {
+                    lower = t;
+                } else {
+                    upper = t;
+                }
+                t = (lower + upper) / 2;
             }
-        }
 
-        graphics.endStroke();
+            // y-Wert berechnen
+            const curveY = this._bezierPoint(t, p1.y, controlY1, controlY2, p2.y);
+            return curveY;
+        }
     }
 
-    /**
-     * Returns the y-coordinate for a given x-coordinate on the curve.
-     * @param {number} x - The x-coordinate to query.
-     * @returns {number} - The y-coordinate at the given x-coordinate.
-     */
-    getY(x) {
-        // Implement a method to find y for a given x-coordinate
-        let previousPoint = null;
-        let nextPoint = null;
-        for (let i = 0; i < this.points.length - 1; i++) {
-            const point1 = this.points[i];
-            const point2 = this.points[i + 1];
-            if (point1.x <= x && x <= point2.x) {
-                previousPoint = point1;
-                nextPoint = point2;
-                break;
-            }
-        }
-        if (previousPoint && nextPoint) {
-            // Linear interpolation for simplicity
-            const t = (x - previousPoint.x) / (nextPoint.x - previousPoint.x);
-            const y = previousPoint.y + t * (nextPoint.y - previousPoint.y);
-            return y;
-        }
-        return null;
-    }
+    return null; // Wenn x außerhalb der Kurve liegt
+}
+
+/**
+ * Helper function to calculate a point on a Bézier curve for a given t.
+ * @param {number} t - The parameter (0 <= t <= 1).
+ * @param {number} p0 - The starting point.
+ * @param {number} p1 - The first control point.
+ * @param {number} p2 - The second control point.
+ * @param {number} p3 - The ending point.
+ * @returns {number} - The calculated point value.
+ */
+_bezierPoint(t, p0, p1, p2, p3) {
+    const oneMinusT = 1 - t;
+    return (
+        oneMinusT ** 3 * p0 +
+        3 * oneMinusT ** 2 * t * p1 +
+        3 * oneMinusT * t ** 2 * p2 +
+        t ** 3 * p3
+    );
+}
 }
