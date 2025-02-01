@@ -62,6 +62,23 @@ export class SplineCurve extends createjs.Container {
             this.drawCurve();
         }
     }
+	
+	/**
+	 * Updates multiple points on the curve.
+	 * @param {Array} updates - An array of objects, each containing an index and new x/y values.
+	 * Example: [{ index: 0, x: 100, y: 150 }, { index: 2, x: 200, y: 250 }]
+	 */
+	updatePoints(updates) {
+		updates.forEach(({ index, x, y }) => {
+				console.log(index)
+			if (index >= 0 && index < this.points.length) {
+				console.log("test")
+				this.points[index].x = x;
+				this.points[index].y = y;
+			}
+		});
+		this.drawCurve();
+	}
 
     /**
      * Draws the Spline curve based on the current points.
