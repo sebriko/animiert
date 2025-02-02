@@ -1,7 +1,11 @@
+import { Line } from '../com/Line.js'; 
+
 /**
  * Represents a Spline curve.
  * @extends {createjs.Container}
  */
+ 
+
 export class SplineCurve extends createjs.Container {
     /**
      * Creates an instance of SplineCurve.
@@ -16,6 +20,22 @@ export class SplineCurve extends createjs.Container {
         this.points = points;
         this.color = color;
         this.thickness = thickness;
+		
+		//Marker
+		this.markedX = 0;
+        this.markerInitialized = false;
+        this.markColor = createjs.Graphics.getRGB(0, 0, 0);
+        this.markRadius = 3;
+		
+		this.markedCircle = new createjs.Shape();
+        this.markedCircle.graphics.setStrokeStyle(5);
+        this.addChild(this.markedCircle);
+
+        this.vGuideLine = new Line(0, 0, 0, 0, color, thickness);
+        this.addChild(this.vGuideLine);
+
+        this.hGuideLine = new Line(0, 0, 0, 0, color, thickness); 
+        this.addChild(this.hGuideLine); 
 
         // Create a createjs.Shape instance for drawing the curve
         this.curveShape = new createjs.Shape();
@@ -114,69 +134,119 @@ export class SplineCurve extends createjs.Container {
 
 
 
-/**
- * Returns the y-coordinate for a given x-coordinate on the curve.
- * @param {number} x - The x-coordinate to query.
- * @returns {number} - The y-coordinate at the given x-coordinate, or null if x is outside the curve.
- */
-getY(x) {
-    if (this.points.length < 2) return null;
+	/**
+	 * Returns the y-coordinate for a given x-coordinate on the curve.
+	 * @param {number} x - The x-coordinate to query.
+	 * @returns {number} - The y-coordinate at the given x-coordinate, or null if x is outside the curve.
+	 */
+	getY(x) {
+		if (this.points.length < 2) return null;
 
-    for (let i = 0; i < this.points.length - 1; i++) {
-        const p0 = this.points[i === 0 ? i : i - 1];
-        const p1 = this.points[i];
-        const p2 = this.points[i + 1];
-        const p3 = this.points[i + 2] || p2;
+		for (let i = 0; i < this.points.length - 1; i++) {
+			const p0 = this.points[i === 0 ? i : i - 1];
+			const p1 = this.points[i];
+			const p2 = this.points[i + 1];
+			const p3 = this.points[i + 2] || p2;
 
-        // Kontrollpunkte für diesen Abschnitt berechnen
-        const controlX1 = p1.x + (p2.x - p0.x) / 6;
-        const controlY1 = p1.y + (p2.y - p0.y) / 6;
+			// Kontrollpunkte für diesen Abschnitt berechnen
+			const controlX1 = p1.x + (p2.x - p0.x) / 6;
+			const controlY1 = p1.y + (p2.y - p0.y) / 6;
 
-        const controlX2 = p2.x - (p3.x - p1.x) / 6;
-        const controlY2 = p2.y - (p3.y - p1.y) / 6;
+			const controlX2 = p2.x - (p3.x - p1.x) / 6;
+			const controlY2 = p2.y - (p3.y - p1.y) / 6;
 
-        // Prüfen, ob x in diesem Abschnitt liegt
-        if (p1.x <= x && x <= p2.x) {
-            // Parameter t iterativ bestimmen
-            let t = 0.5; // Startwert
-            const tolerance = 0.0001; // Genauigkeit
-            let lower = 0, upper = 1;
+			// Prüfen, ob x in diesem Abschnitt liegt
+			if (p1.x <= x && x <= p2.x) {
+				// Parameter t iterativ bestimmen
+				let t = 0.5; // Startwert
+				const tolerance = 0.0001; // Genauigkeit
+				let lower = 0, upper = 1;
 
-            while (upper - lower > tolerance) {
-                const curveX = this._bezierPoint(t, p1.x, controlX1, controlX2, p2.x);
-                if (curveX < x) {
-                    lower = t;
-                } else {
-                    upper = t;
-                }
-                t = (lower + upper) / 2;
-            }
+				while (upper - lower > tolerance) {
+					const curveX = this._bezierPoint(t, p1.x, controlX1, controlX2, p2.x);
+					if (curveX < x) {
+						lower = t;
+					} else {
+						upper = t;
+					}
+					t = (lower + upper) / 2;
+				}
 
-            // y-Wert berechnen
-            const curveY = this._bezierPoint(t, p1.y, controlY1, controlY2, p2.y);
-            return curveY;
+				// y-Wert berechnen
+				const curveY = this._bezierPoint(t, p1.y, controlY1, controlY2, p2.y);
+				return curveY;
+			}
+		}
+
+		return null; // Wenn x außerhalb der Kurve liegt
+	}
+
+	/**
+	 * Helper function to calculate a point on a Bézier curve for a given t.
+	 * @param {number} t - The parameter (0 <= t <= 1).
+	 * @param {number} p0 - The starting point.
+	 * @param {number} p1 - The first control point.
+	 * @param {number} p2 - The second control point.
+	 * @param {number} p3 - The ending point.
+	 * @returns {number} - The calculated point value.
+	 */
+	_bezierPoint(t, p0, p1, p2, p3) {
+		const oneMinusT = 1 - t;
+		return (
+			oneMinusT ** 3 * p0 +
+			3 * oneMinusT ** 2 * t * p1 +
+			3 * oneMinusT * t ** 2 * p2 +
+			t ** 3 * p3
+		);
+	}
+
+    setMarkProperties(color, radius) {
+        this.markerInitialized = true;
+        this.markColor = color || this.markColor;
+        this.markRadius = radius || this.markRadius;
+
+        this.markedCircle.graphics.clear();
+        this.markedCircle.graphics.beginFill(this.markColor)
+            .drawCircle(0, 0, this.markRadius)
+            .endFill();
+
+        stage.update();
+    }
+
+    drawMarker(value = this.markedX, isPercentage = false, withLines = true) {
+        if (!this.markerInitialized) {
+            this.setMarkProperties();
+        }
+
+        this.markedX = isPercentage ? this.startX + (Math.max(0, Math.min(100, value)) / 100) * (this.endX - this.startX) : value;
+        const markedY = this.getY(this.markedX);
+        const startX = this.markedX;
+        const startY = 0;
+        const endX = this.markedX;
+        const endY = markedY;
+
+        this.markedCircle.x = this.markedX * this.scaleValueX;
+        this.markedCircle.y = markedY;
+		
+		console.log(this.markedX)
+
+        if (withLines) {
+            this.vGuideLine.setStartEnd(startX, startY, endX, endY);
+            this.hGuideLine.setStartEnd(0, endY, endX, endY);
         }
     }
 
-    return null; // Wenn x außerhalb der Kurve liegt
-}
 
-/**
- * Helper function to calculate a point on a Bézier curve for a given t.
- * @param {number} t - The parameter (0 <= t <= 1).
- * @param {number} p0 - The starting point.
- * @param {number} p1 - The first control point.
- * @param {number} p2 - The second control point.
- * @param {number} p3 - The ending point.
- * @returns {number} - The calculated point value.
- */
-_bezierPoint(t, p0, p1, p2, p3) {
-    const oneMinusT = 1 - t;
-    return (
-        oneMinusT ** 3 * p0 +
-        3 * oneMinusT ** 2 * t * p1 +
-        3 * oneMinusT * t ** 2 * p2 +
-        t ** 3 * p3
-    );
-}
+
+
+
+
+
+
+
+
+
+
+
+
 }
