@@ -84,21 +84,15 @@ export class SplineCurve extends createjs.Container {
     }
 	
 	/**
-	 * Updates multiple points on the curve.
-	 * @param {Array} updates - An array of objects, each containing an index and new x/y values.
-	 * Example: [{ index: 0, x: 100, y: 150 }, { index: 2, x: 200, y: 250 }]
+	 * Replaces all points on the curve with a new set of points.
+	 * @param {Array} newPoints - An array of objects, each containing x and y coordinates.
+	 * Example: [{ x: 100, y: 150 }, { x: 200, y: 250 }]
 	 */
-	updatePoints(updates) {
-		updates.forEach(({ index, x, y }) => {
-				console.log(index)
-			if (index >= 0 && index < this.points.length) {
-				console.log("test")
-				this.points[index].x = x;
-				this.points[index].y = y;
-			}
-		});
+	updatePoints(newPoints) {
+		this.points = newPoints.map(({ x, y }) => ({ x, y }));
 		this.drawCurve();
 	}
+
 
     /**
      * Draws the Spline curve based on the current points.
@@ -199,6 +193,43 @@ export class SplineCurve extends createjs.Container {
 			t ** 3 * p3
 		);
 	}
+	
+	
+	
+	getX(y, precision = 0.1) {
+		let results = [];
+		if (this.points.length < 2) return results;
+
+		for (let i = 0; i < this.points.length - 1; i++) {
+			const p0 = this.points[i === 0 ? i : i - 1];
+			const p1 = this.points[i];
+			const p2 = this.points[i + 1];
+			const p3 = this.points[i + 2] || p2;
+
+			for (let t = 0; t <= 1; t += precision) {
+				const xt = this.bezierPoint(p1.x, p2.x, p0.x, p3.x, t);
+				const yt = this.bezierPoint(p1.y, p2.y, p0.y, p3.y, t);
+
+				if (Math.abs(yt - y) < precision) {
+					results.push(xt);
+				}
+			}
+		}
+
+		return results;
+	}
+
+	bezierPoint(p1, p2, p0, p3, t) {
+		const control1 = p1 + (p2 - p0) / 6;
+		const control2 = p2 - (p3 - p1) / 6;
+		return (1 - t) ** 3 * p1 + 3 * (1 - t) ** 2 * t * control1 + 3 * (1 - t) * t ** 2 * control2 + t ** 3 * p2;
+	}
+
+
+	
+	
+	
+	
 
     setMarkProperties(color, radius) {
         this.markerInitialized = true;
@@ -228,7 +259,6 @@ export class SplineCurve extends createjs.Container {
         this.markedCircle.x = this.markedX * this.scaleValueX;
         this.markedCircle.y = markedY;
 		
-		console.log(this.markedX)
 
         if (withLines) {
             this.vGuideLine.setStartEnd(startX, startY, endX, endY);
