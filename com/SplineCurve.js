@@ -136,24 +136,24 @@ export class SplineCurve extends createjs.Container {
 	getY(x) {
 		if (this.points.length < 2) return null;
 
-		for (let i = 0; i < this.points.length - 1; i++) {
-			const p0 = this.points[i === 0 ? i : i - 1];
-			const p1 = this.points[i];
-			const p2 = this.points[i + 1];
-			const p3 = this.points[i + 2] || p2;
+		// Punkte sortieren
+		this.points.sort((a, b) => a.x - b.x);
 
-			// Kontrollpunkte für diesen Abschnitt berechnen
+		for (let i = 0; i < this.points.length - 1; i++) {
+			let p0 = this.points[i === 0 ? i : i - 1];
+			let p1 = this.points[i];
+			let p2 = this.points[i + 1];
+			let p3 = this.points[i + 2] || p2;
+
 			const controlX1 = p1.x + (p2.x - p0.x) / 6;
 			const controlY1 = p1.y + (p2.y - p0.y) / 6;
 
 			const controlX2 = p2.x - (p3.x - p1.x) / 6;
 			const controlY2 = p2.y - (p3.y - p1.y) / 6;
 
-			// Prüfen, ob x in diesem Abschnitt liegt
 			if (p1.x <= x && x <= p2.x) {
-				// Parameter t iterativ bestimmen
-				let t = 0.5; // Startwert
-				const tolerance = 0.0001; // Genauigkeit
+				let t = 0.5;
+				const tolerance = 0.0001;
 				let lower = 0, upper = 1;
 
 				while (upper - lower > tolerance) {
@@ -166,14 +166,13 @@ export class SplineCurve extends createjs.Container {
 					t = (lower + upper) / 2;
 				}
 
-				// y-Wert berechnen
-				const curveY = this._bezierPoint(t, p1.y, controlY1, controlY2, p2.y);
-				return curveY;
+				return this._bezierPoint(t, p1.y, controlY1, controlY2, p2.y);
 			}
 		}
 
-		return null; // Wenn x außerhalb der Kurve liegt
+		return null;
 	}
+
 
 	/**
 	 * Helper function to calculate a point on a Bézier curve for a given t.
@@ -193,43 +192,7 @@ export class SplineCurve extends createjs.Container {
 			t ** 3 * p3
 		);
 	}
-	
-	
-	
-	getX(y, precision = 0.1) {
-		let results = [];
-		if (this.points.length < 2) return results;
 
-		for (let i = 0; i < this.points.length - 1; i++) {
-			const p0 = this.points[i === 0 ? i : i - 1];
-			const p1 = this.points[i];
-			const p2 = this.points[i + 1];
-			const p3 = this.points[i + 2] || p2;
-
-			for (let t = 0; t <= 1; t += precision) {
-				const xt = this.bezierPoint(p1.x, p2.x, p0.x, p3.x, t);
-				const yt = this.bezierPoint(p1.y, p2.y, p0.y, p3.y, t);
-
-				if (Math.abs(yt - y) < precision) {
-					results.push(xt);
-				}
-			}
-		}
-
-		return results;
-	}
-
-	bezierPoint(p1, p2, p0, p3, t) {
-		const control1 = p1 + (p2 - p0) / 6;
-		const control2 = p2 - (p3 - p1) / 6;
-		return (1 - t) ** 3 * p1 + 3 * (1 - t) ** 2 * t * control1 + 3 * (1 - t) * t ** 2 * control2 + t ** 3 * p2;
-	}
-
-
-	
-	
-	
-	
 
     setMarkProperties(color, radius) {
         this.markerInitialized = true;
