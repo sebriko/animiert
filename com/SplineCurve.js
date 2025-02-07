@@ -172,6 +172,60 @@ export class SplineCurve extends createjs.Container {
 
 		return null;
 	}
+	
+	
+	/**
+	 * Returns the x-coordinate for a given y-coordinate on the curve.
+	 * @param {number} y - The y-coordinate to query.
+	 * @returns {number} - The x-coordinate at the given y-coordinate, or null if y is outside the curve.
+	 */
+	getX(y) {
+		if (this.points.length < 2) return null;
+
+		// Punkte sortieren
+		this.points.sort((a, b) => a.y - b.y);
+
+		for (let i = 0; i < this.points.length - 1; i++) {
+			let p0 = this.points[i === 0 ? i : i - 1];
+			let p1 = this.points[i];
+			let p2 = this.points[i + 1];
+			let p3 = this.points[i + 2] || p2;
+
+			const controlX1 = p1.x + (p2.x - p0.x) / 6;
+			const controlY1 = p1.y + (p2.y - p0.y) / 6;
+
+			const controlX2 = p2.x - (p3.x - p1.x) / 6;
+			const controlY2 = p2.y - (p3.y - p1.y) / 6;
+
+			if (p1.y <= y && y <= p2.y) {
+				let t = 0.5;
+				const tolerance = 0.0001;
+				let lower = 0, upper = 1;
+
+				while (upper - lower > tolerance) {
+					const curveY = this._bezierPoint(t, p1.y, controlY1, controlY2, p2.y);
+					if (curveY < y) {
+						lower = t;
+					} else {
+						upper = t;
+					}
+					t = (lower + upper) / 2;
+				}
+
+				return this._bezierPoint(t, p1.x, controlX1, controlX2, p2.x);
+			}
+		}
+
+		return null;
+	}
+
+	
+	
+	
+	
+	
+	
+	
 
 
 	/**
