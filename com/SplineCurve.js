@@ -257,6 +257,8 @@ export class SplineCurve extends createjs.Container {
         this.markedCircle.graphics.beginFill(this.markColor)
             .drawCircle(0, 0, this.markRadius)
             .endFill();
+			
+		this.markedCircle.visible = false;
 
         stage.update();
     }
@@ -264,7 +266,9 @@ export class SplineCurve extends createjs.Container {
     drawMarker(value = this.markedX, isPercentage = false, withLines = true) {
         if (!this.markerInitialized) {
             this.setMarkProperties();
-        }
+        } else {
+			this.markedCircle.visible = true;
+		}
 
         this.markedX = isPercentage ? this.startX + (Math.max(0, Math.min(100, value)) / 100) * (this.endX - this.startX) : value;
         const markedY = this.getY(this.markedX);
@@ -273,7 +277,7 @@ export class SplineCurve extends createjs.Container {
         const endX = this.markedX;
         const endY = markedY;
 
-        this.markedCircle.x = this.markedX * this.scaleValueX;
+        this.markedCircle.x = this.markedX;
         this.markedCircle.y = markedY;
 		
 
