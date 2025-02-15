@@ -23,6 +23,10 @@ export class Text extends createjs.Container {
         stage.addChild(this);
     }
     
+    getMeasuredWidth() {
+        return this.textObj.getMeasuredWidth();
+    }
+	
     getMeasuredHeight() {
         return this.textObj.getMeasuredHeight();
     }
