@@ -89,7 +89,7 @@ addTicksAndLabels(direction, firstValue, lastValue, firstPos, lastPos, divisions
                 break;
             case "bottom":
                 label.x = -tickLength - label.getMeasuredWidth() - 5;
-                label.y = -pos - label.getMeasuredHeight()/2;
+                label.y = pos - label.getMeasuredHeight()/2;
                 break;
             case "left":
                 label.x = -pos - label.getMeasuredWidth() / 2;

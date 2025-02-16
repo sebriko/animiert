@@ -127,6 +127,7 @@ handleStripClick(event) {
      * @private
      */
     onThumbPressMove(event) {
+	
         const point = this.container.globalToLocal(event.stageX, event.stageY);
         let newX, newY;
         
@@ -137,6 +138,8 @@ handleStripClick(event) {
             newY = Math.max(0, Math.min(point.y + this.offset.y, this.size));
             this.setValue(this.maxValue - (newY / this.size) * (this.maxValue - this.minValue));
         }
+		
+		console.log(this.maxValue - (newY / this.size) * (this.maxValue - this.minValue))
     }
 
     /**
