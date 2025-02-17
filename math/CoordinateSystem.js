@@ -42,69 +42,72 @@ export class CoordinateSystem extends createjs.Container {
     }
 
 
-addTicksAndLabels(direction, firstValue, lastValue, firstPos, lastPos, divisions, tickLength, font = "21px Arial", fontColor = "#444444", except = [], decimalPlaces = 1, decimalSeparator = ".") {
+addTicksAndLabels(
+    direction, firstValue, lastValue, firstPos, lastPos, divisions,
+    tickLength, font = "21px Arial", fontColor = "#444444",
+    except = [], readingdirection = true, decimalPlaces = 1, decimalSeparator = "."
+) {
     let step = (lastPos - firstPos) / divisions;
     let valueStep = (lastValue - firstValue) / divisions;
 
     for (let i = 0; i <= divisions; i++) {
         let pos = firstPos + i * step;
         let value = firstValue + i * valueStep;
-        let tick;
-        
-        // Wert runden und richtig formatieren
         let roundedValue = value.toFixed(decimalPlaces).replace(".", decimalSeparator);
+        let tick = new createjs.Shape();
+        let tickStart, tickEnd;
 
-        // Erstelle den Strich, unabhängig davon, ob der Index im 'except' Array ist
         switch (direction) {
             case "top":
-                tick = new createjs.Shape();
-                tick.graphics.setStrokeStyle(this.thickness).beginStroke(this.color).moveTo(0, -pos).lineTo(-tickLength, -pos);
+                tickStart = [0, -pos];
+                tickEnd = readingdirection ? [-tickLength, -pos] : [tickLength, -pos];
                 break;
             case "bottom":
-                tick = new createjs.Shape();
-                tick.graphics.setStrokeStyle(this.thickness).beginStroke(this.color).moveTo(0, pos).lineTo(-tickLength, pos);
+                tickStart = [0, pos];
+                tickEnd = readingdirection ? [-tickLength, pos] : [tickLength, pos];
                 break;
             case "left":
-                tick = new createjs.Shape();
-                tick.graphics.setStrokeStyle(this.thickness).beginStroke(this.color).moveTo(-pos, 0).lineTo(-pos, tickLength);
+                tickStart = [-pos, 0];
+                tickEnd = readingdirection ? [-pos, tickLength] : [-pos, -tickLength];
                 break;
             case "right":
-                tick = new createjs.Shape();
-                tick.graphics.setStrokeStyle(this.thickness).beginStroke(this.color).moveTo(pos, 0).lineTo(pos, tickLength);
+                tickStart = [pos, 0];
+                tickEnd = readingdirection ? [pos, tickLength] : [pos, -tickLength];
                 break;
         }
 
-        // Prüfen, ob der Index in der 'except' Liste enthalten ist
+        tick.graphics.setStrokeStyle(this.thickness).beginStroke(this.color)
+            .moveTo(...tickStart).lineTo(...tickEnd);
+        
         if (except.includes(i)) {
-            this.addChild(tick); // Nur den Strich hinzufügen, keine Beschriftung
+            this.addChild(tick);
             continue;
         }
 
-        // Beschriftung erstellen
         let label = new createjs.Text(roundedValue, font, fontColor);
+        let labelX, labelY;
+
         switch (direction) {
             case "top":
-                label.x = -tickLength - label.getMeasuredWidth() - 5;
-                label.y = -pos - label.getMeasuredHeight()/2;
-                break;
             case "bottom":
-                label.x = -tickLength - label.getMeasuredWidth() - 5;
-                label.y = pos - label.getMeasuredHeight()/2;
+                labelX = readingdirection ? -tickLength - label.getMeasuredWidth() - 5 : tickLength + 5;
+                labelY = pos * (direction === "top" ? -1 : 1) - label.getMeasuredHeight() / 2;
                 break;
             case "left":
-                label.x = -pos - label.getMeasuredWidth() / 2;
-                label.y = label.getMeasuredHeight()-5;
-                break;
             case "right":
-                label.x = pos - label.getMeasuredWidth() / 2;
-                label.y = label.getMeasuredHeight()-5;
+                labelX = pos * (direction === "left" ? -1 : 1) - label.getMeasuredWidth() / 2;
+                labelY = readingdirection ? 7 : -label.getMeasuredHeight() - 7;
                 break;
         }
+
+        label.x = labelX;
+        label.y = labelY;
 
         this.addChild(tick);
         this.addChild(label);
     }
 }
+
 
 
 }
