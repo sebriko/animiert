@@ -117,6 +117,56 @@ export class Line extends createjs.Container {
 
         this.drawLine();
     }
+	
+	/**
+	 * Returns the Y-value for a given X on the line.
+	 * @param {number} x - The X-coordinate.
+	 * @returns {number} - The Y-coordinate corresponding to the X-value.
+	 */
+	getY(x) {
+		const dx = this.endX - this.startX;
+		const dy = this.endY - this.startY;
+		const m = dy / dx; // Slope
+
+		// Y = m * X + b, with b calculated using start point
+		const b = this.startY - m * this.startX;
+
+		return m * x + b;
+	}
+
+	/**
+	 * Returns the X-value for a given Y on the line.
+	 * @param {number} y - The Y-coordinate.
+	 * @returns {number} - The X-coordinate corresponding to the Y-value.
+	 */
+	getX(y) {
+		const dx = this.endX - this.startX;
+		const dy = this.endY - this.startY;
+		const m = dy / dx; // Slope
+
+		// X = (Y - b) / m, with b calculated using start point
+		const b = this.startY - m * this.startX;
+
+		return (y - b) / m;
+	}
+	
+	/**
+	 * Masks the current object with a rectangle.
+	 * @param {number} x1 - The x-coordinate of the first point of the rectangle.
+	 * @param {number} y1 - The y-coordinate of the first point of the rectangle.
+	 * @param {number} x2 - The x-coordinate of the second point of the rectangle.
+	 * @param {number} y2 - The y-coordinate of the second point of the rectangle.
+	 */
+	maskWithRectangle(x1, y1, x2, y2) {
+		
+		const maskShape = new createjs.Shape();
+		maskShape.graphics.beginFill("#FFFFFF").drawRect(x1, y1, x2 - x1, y2 - y1); // Create the rectangle mask
+
+		this.line.mask = maskShape;
+		stage.update();
+
+	}
+	
 
     /**
      * Sets the rotation of the line.
