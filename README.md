@@ -17,4 +17,4 @@ It simplifies the process of animating specific graphical elements, such as:
 # Demo
 
 Explore the framework in action:
-CodePen Demo Collection
+[CodePen Demo Collection](https://codepen.io/collection/VYopoj?cursor=eyJwYWdlIjoxfQ==)
