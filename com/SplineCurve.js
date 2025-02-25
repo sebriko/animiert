@@ -222,97 +222,97 @@ export class SplineCurve extends createjs.Container {
 	
 	
 	/**
- * Findet alle Schnittpunkte der Spline-Kurve mit einer gegebenen Linie.
- * @param {number} x1 - Startpunkt X der Linie.
- * @param {number} y1 - Startpunkt Y der Linie.
- * @param {number} x2 - Endpunkt X der Linie.
- * @param {number} y2 - Endpunkt Y der Linie.
- * @param {number} [samples=100] - Anzahl der Abtastpunkte auf der Kurve.
- * @returns {Array} - Ein Array mit Schnittpunkten als Objekte { x, y }.
- */
-findIntersections(x1, y1, x2, y2, samples = 100) {
-    let intersections = [];
+	 * Findet alle Schnittpunkte der Spline-Kurve mit einer gegebenen Linie.
+	 * @param {number} x1 - Startpunkt X der Linie.
+	 * @param {number} y1 - Startpunkt Y der Linie.
+	 * @param {number} x2 - Endpunkt X der Linie.
+	 * @param {number} y2 - Endpunkt Y der Linie.
+	 * @param {number} [samples=100] - Anzahl der Abtastpunkte auf der Kurve.
+	 * @returns {Array} - Ein Array mit Schnittpunkten als Objekte { x, y }.
+	 */
+	findIntersections(x1, y1, x2, y2, samples = 100) {
+		let intersections = [];
 
-    if (this.points.length < 2) return intersections;
+		if (this.points.length < 2) return intersections;
 
-    // Kurve in Liniensegmente zerlegen
-    let previousPoint = this.points[0];
-    for (let i = 1; i <= samples; i++) {
-        let t = i / samples;
-        let currentPoint = this.getPointOnCurve(t);
+		// Kurve in Liniensegmente zerlegen
+		let previousPoint = this.points[0];
+		for (let i = 1; i <= samples; i++) {
+			let t = i / samples;
+			let currentPoint = this.getPointOnCurve(t);
 
-        let intersection = this.getLineIntersection(
-            previousPoint.x, previousPoint.y, currentPoint.x, currentPoint.y,
-            x1, y1, x2, y2
-        );
+			let intersection = this.getLineIntersection(
+				previousPoint.x, previousPoint.y, currentPoint.x, currentPoint.y,
+				x1, y1, x2, y2
+			);
 
-        if (intersection) {
-            intersections.push(intersection);
-        }
+			if (intersection) {
+				intersections.push(intersection);
+			}
 
-        previousPoint = currentPoint;
-    }
+			previousPoint = currentPoint;
+		}
 
-    return intersections;
-}
+		return intersections;
+	}
 
-/**
- * Berechnet den Schnittpunkt zweier Liniensegmente.
- * @returns {Object|null} - Schnittpunkt { x, y } oder null, falls keine Kreuzung.
- */
-getLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
-    let denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    if (denom === 0) return null; // Parallel oder identisch
+	/**
+	 * Berechnet den Schnittpunkt zweier Liniensegmente.
+	 * @returns {Object|null} - Schnittpunkt { x, y } oder null, falls keine Kreuzung.
+	 */
+	getLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
+		let denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+		if (denom === 0) return null; // Parallel oder identisch
 
-    let px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom;
-    let py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom;
+		let px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom;
+		let py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom;
 
-    // Prüfen, ob der Punkt auf beiden Segmenten liegt
-    if (
-        px >= Math.min(x1, x2) && px <= Math.max(x1, x2) &&
-        py >= Math.min(y1, y2) && py <= Math.max(y1, y2) &&
-        px >= Math.min(x3, x4) && px <= Math.max(x3, x4) &&
-        py >= Math.min(y3, y4) && py <= Math.max(y3, y4)
-    ) {
-        return { x: px, y: py };
-    }
+		// Prüfen, ob der Punkt auf beiden Segmenten liegt
+		if (
+			px >= Math.min(x1, x2) && px <= Math.max(x1, x2) &&
+			py >= Math.min(y1, y2) && py <= Math.max(y1, y2) &&
+			px >= Math.min(x3, x4) && px <= Math.max(x3, x4) &&
+			py >= Math.min(y3, y4) && py <= Math.max(y3, y4)
+		) {
+			return { x: px, y: py };
+		}
 
-    return null;
-}
+		return null;
+	}
 
-/**
- * Berechnet einen Punkt auf der Spline-Kurve für einen gegebenen Parameter t.
- * @param {number} t - Wert zwischen 0 und 1.
- * @returns {Object} - Punkt { x, y } auf der Kurve.
- */
-getPointOnCurve(t) {
-    let n = this.points.length - 1;
-    let i = Math.floor(t * n);
-    let p0 = this.points[i === 0 ? i : i - 1];
-    let p1 = this.points[i];
-    let p2 = this.points[i + 1] || p1;
-    let p3 = this.points[i + 2] || p2;
+	/**
+	 * Berechnet einen Punkt auf der Spline-Kurve für einen gegebenen Parameter t.
+	 * @param {number} t - Wert zwischen 0 und 1.
+	 * @returns {Object} - Punkt { x, y } auf der Kurve.
+	 */
+	getPointOnCurve(t) {
+		let n = this.points.length - 1;
+		let i = Math.floor(t * n);
+		let p0 = this.points[i === 0 ? i : i - 1];
+		let p1 = this.points[i];
+		let p2 = this.points[i + 1] || p1;
+		let p3 = this.points[i + 2] || p2;
 
-    let tt = (t * n) - i; // Lokaler t-Wert im aktuellen Segment
+		let tt = (t * n) - i; // Lokaler t-Wert im aktuellen Segment
 
-    let controlX1 = p1.x + (p2.x - p0.x) / 6;
-    let controlY1 = p1.y + (p2.y - p0.y) / 6;
-    let controlX2 = p2.x - (p3.x - p1.x) / 6;
-    let controlY2 = p2.y - (p3.y - p1.y) / 6;
+		let controlX1 = p1.x + (p2.x - p0.x) / 6;
+		let controlY1 = p1.y + (p2.y - p0.y) / 6;
+		let controlX2 = p2.x - (p3.x - p1.x) / 6;
+		let controlY2 = p2.y - (p3.y - p1.y) / 6;
 
-    let x = this.bezier(tt, p1.x, controlX1, controlX2, p2.x);
-    let y = this.bezier(tt, p1.y, controlY1, controlY2, p2.y);
+		let x = this.bezier(tt, p1.x, controlX1, controlX2, p2.x);
+		let y = this.bezier(tt, p1.y, controlY1, controlY2, p2.y);
 
-    return { x, y };
-}
+		return { x, y };
+	}
 
-/**
- * Berechnet einen Punkt auf einer kubischen Bézier-Kurve.
- */
-bezier(t, p0, p1, p2, p3) {
-    let u = 1 - t;
-    return (u ** 3) * p0 + 3 * u ** 2 * t * p1 + 3 * u * (t ** 2) * p2 + (t ** 3) * p3;
-}
+	/**
+	 * Berechnet einen Punkt auf einer kubischen Bézier-Kurve.
+	 */
+	bezier(t, p0, p1, p2, p3) {
+		let u = 1 - t;
+		return (u ** 3) * p0 + 3 * u ** 2 * t * p1 + 3 * u * (t ** 2) * p2 + (t ** 3) * p3;
+	}
 
 
 	

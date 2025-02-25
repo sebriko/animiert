@@ -1,21 +1,21 @@
-// ButtonSlider-Klasse mit Strichklick-Funktionalität
+// ButtonSlider class with line click functionality
 export class ButtonSlider extends createjs.Container {
     /**
      * Creates an instance of ButtonSlider.
-     * @param {number} size Die Größe des Schiebereglers.
-     * @param {number} width Die Breite des Schiebereglers.
-     * @param {number} height Die Höhe des Schiebereglers.
-     * @param {number} minValue Der minimale Wert des Schiebereglers.
-     * @param {number} maxValue Der maximale Wert des Schiebereglers.
-     * @param {number} defaultValue Der Standardwert des Schiebereglers.
-     * @param {string} [orientation='horizontal'] Die Ausrichtung des Schiebereglers (horizontal oder vertikal).
+     * @param {number} size The size of the slider.
+     * @param {number} width The width of the slider.
+     * @param {number} height The height of the slider.
+     * @param {number} minValue The minimum value of the slider.
+     * @param {number} maxValue The maximum value of the slider.
+     * @param {number} defaultValue The default value of the slider.
+     * @param {string} [orientation='horizontal'] The orientation of the slider (horizontal or vertical).
      * 
      * @example
      * const slider = new ButtonSlider(100, 200, 20, 0, 100, 50, "horizontal");
-     * // Fügen Sie einen Event-Listener hinzu, um Änderungen des Schiebereglers zu behandeln
+     * // Add an event listener to handle slider changes
      * slider.addEventListener("change", function() {
-     *     // Hier können Sie Ihre Reaktion auf Schieberegleränderungen definieren
-     *     console.log("Schiebereglerwert geändert:", slider.value);
+     *     // Here you can define your reaction to slider changes
+     *     console.log("Slider value changed:", slider.value);
      * });
      */
     constructor(size, width, height, minValue, maxValue, defaultValue, orientation, backgroundColor="rgba(255, 255, 255, 1)") {
@@ -65,7 +65,7 @@ drawBackground() {
 }
 
 drawStripClickArea() {
-    // Vergrößern des Klickbereichs um 20 Pixel an jedem Ende des Reglerstrichs
+    // Extend the click area by 20 pixels at each end of the slider line
     var extendedSize = this.size + 40;
     if (this.orientation === "horizontal") {
         this.stripClickArea.graphics.clear().beginFill(this.backgroundColor).drawRect(-20, -this.height / 2, extendedSize, this.height);
@@ -75,17 +75,17 @@ drawStripClickArea() {
     //this.stripClickArea.alpha = 0.1; 
 }
 
-// Methode zur Behandlung von Strichklick-Ereignissen
+// Method for handling line click events
 handleStripClick(event) {
     var point = this.container.globalToLocal(event.stageX, event.stageY);
 
     if (this.orientation === "horizontal") {
-        // Überprüfen, ob der Klick innerhalb des tatsächlichen Reglerstrichs liegt
+        // Check if the click is within the actual slider line
         if (point.x >= 0 && point.x <= this.size) {
             var percentage = point.x / this.size;
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         } else {
-            // Klick außerhalb des Reglerstrichs - springe zum minimalen oder maximalen Wert
+            // Click outside the slider line - jump to minimum or maximum value
             if (point.x < 0) {
                 this.setValue(this.minValue);
             } else {
@@ -93,17 +93,17 @@ handleStripClick(event) {
             }
         }
     } else if (this.orientation === "vertical") {
-        // Überprüfen, ob der Klick innerhalb des tatsächlichen Reglerstrichs liegt
+        // Check if the click is within the actual slider line
         if (point.y >= 0 && point.y <= this.size) {
-            // Korrigiertes Verhalten für die y-Achse
+            // Corrected behavior for the y-axis
             var percentage = 1 - (point.y / this.size);
             this.setValue(this.minValue + percentage * (this.maxValue - this.minValue));
         } else {
-            // Klick außerhalb des Reglerstrichs - springe zum minimalen oder maximalen Wert
+            // Click outside the slider line - jump to minimum or maximum value
             if (point.y < 0) {
-                this.setValue(this.maxValue);  // Korrigiert für nach unten wachsendes Koordinatensystem
+                this.setValue(this.maxValue);  // Corrected for downward growing coordinate system
             } else {
-                this.setValue(this.minValue);  // Korrigiert für nach unten wachsendes Koordinatensystem
+                this.setValue(this.minValue);  // Corrected for downward growing coordinate system
             }
         }
     }
@@ -138,8 +138,7 @@ handleStripClick(event) {
             newY = Math.max(0, Math.min(point.y + this.offset.y, this.size));
             this.setValue(this.maxValue - (newY / this.size) * (this.maxValue - this.minValue));
         }
-		
-		console.log(this.maxValue - (newY / this.size) * (this.maxValue - this.minValue))
+
     }
 
     /**
