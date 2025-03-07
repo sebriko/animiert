@@ -348,7 +348,10 @@ export class SplineCurve extends createjs.Container {
             .endFill();
 			
 		this.markedCircle.visible = false;
-
+		
+		this.vGuideLine.setColor(this.markColor);
+		this.hGuideLine.setColor(this.markColor);
+		
         stage.update();
     }
 
