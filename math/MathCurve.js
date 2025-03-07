@@ -94,4 +94,11 @@ export class MathCurve extends createjs.Container {
             this.hGuideLine.setStartEnd(0, endY, endX, endY);
         }
     }
+	
+	
+    updateEquation(newEquation) {
+        this.equation = newEquation;
+        this.drawCurve();
+        this.drawMarker(this.markedX); 
+    }
 }

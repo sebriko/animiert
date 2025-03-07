@@ -43,16 +43,16 @@ export class CoordinateSystem extends createjs.Container {
 
 
 addTicksAndLabels(
-    direction, firstValue, lastValue, firstPos, lastPos, divisions,
+    direction, lastValue, lastPos, divisions,
     tickLength, font = "21px Arial", fontColor = "#444444",
     except = [], readingdirection = true, decimalPlaces = 1, decimalSeparator = "."
 ) {
-    let step = (lastPos - firstPos) / divisions;
-    let valueStep = (lastValue - firstValue) / divisions;
+    let step = lastPos / divisions;
+    let valueStep = lastValue / divisions;
 
     for (let i = 0; i <= divisions; i++) {
-        let pos = firstPos + i * step;
-        let value = firstValue + i * valueStep;
+        let pos = i * step;
+        let value = i * valueStep;
         let roundedValue = value.toFixed(decimalPlaces).replace(".", decimalSeparator);
         let tick = new createjs.Shape();
         let tickStart, tickEnd;
@@ -107,7 +107,6 @@ addTicksAndLabels(
         this.addChild(label);
     }
 }
-
 
 
 }
