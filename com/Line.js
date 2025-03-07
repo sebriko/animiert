@@ -167,6 +167,16 @@ export class Line extends createjs.Container {
 
 	}
 	
+	/**
+     * Sets the color of the line.
+     * @param {string} newColor - The new color of the line.
+     */
+    setColor(newColor) {
+        this.color = newColor;
+        this.drawLine();
+    }
+
+	
 
     /**
      * Sets the rotation of the line.
