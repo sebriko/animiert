@@ -30,10 +30,10 @@ export class SplineCurve extends createjs.Container {
         this.markedCircle.graphics.setStrokeStyle(5);
         this.addChild(this.markedCircle);
 
-        this.vGuideLine = new Line(0, 0, 0, 0, color, thickness);
+        this.vGuideLine = new Line(0, 0, 0, 0, '#777777', thickness);
         this.addChild(this.vGuideLine);
 
-        this.hGuideLine = new Line(0, 0, 0, 0, color, thickness); 
+        this.hGuideLine = new Line(0, 0, 0, 0, '#777777', thickness); 
         this.addChild(this.hGuideLine); 
 
         // Create a createjs.Shape instance for drawing the curve
@@ -346,12 +346,7 @@ export class SplineCurve extends createjs.Container {
         this.markedCircle.graphics.beginFill(this.markColor)
             .drawCircle(0, 0, this.markRadius)
             .endFill();
-			
-		this.markedCircle.visible = false;
-		
-		this.vGuideLine.setColor(this.markColor);
-		this.hGuideLine.setColor(this.markColor);
-		
+
         stage.update();
     }
 

@@ -23,10 +23,10 @@ export class MathCurve extends createjs.Container {
         this.markedCircle.graphics.setStrokeStyle(5);
         this.addChild(this.markedCircle);
 
-        this.vGuideLine = new Line(0, 0, 0, 0, color, thickness);
+        this.vGuideLine = new Line(0, 0, 0, 0, '#777777', thickness);
         this.addChild(this.vGuideLine);
 
-        this.hGuideLine = new Line(0, 0, 0, 0, color, thickness); 
+        this.hGuideLine = new Line(0, 0, 0, 0, '#777777', thickness); 
         this.addChild(this.hGuideLine); 
 
         this.drawCurve();
