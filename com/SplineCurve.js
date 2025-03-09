@@ -373,6 +373,23 @@ export class SplineCurve extends createjs.Container {
             this.hGuideLine.setStartEnd(0, endY, endX, endY);
         }
     }
+	
+	/**
+	 * Masks the current object with a rectangle.
+	 * @param {number} x1 - The x-coordinate of the first point of the rectangle.
+	 * @param {number} y1 - The y-coordinate of the first point of the rectangle.
+	 * @param {number} x2 - The x-coordinate of the second point of the rectangle.
+	 * @param {number} y2 - The y-coordinate of the second point of the rectangle.
+	 */
+	maskWithRectangle(x1, y1, x2, y2) {
+		
+		const maskShape = new createjs.Shape();
+		maskShape.graphics.beginFill("#FFFFFF").drawRect(x1, y1, x2 - x1, y2 - y1); // Create the rectangle mask
+
+		this.curveShape.mask = maskShape;
+		stage.update();
+
+	}
 
 
 
